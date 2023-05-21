@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "typeRoots": [
+      "node_modules/@types",
+      "path/to/custom/types",
+      "path/to/body-parser/types"
+    ],
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "noEmitOnError": true,
+    "jsx": "preserve",
+    "incremental": true
+  },
+  "include": ["src", "src/files", "mui.d.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "exclude": ["node_modules"]
+}
