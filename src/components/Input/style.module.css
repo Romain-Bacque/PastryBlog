@@ -1,0 +1,45 @@
+.form__input-container {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.form__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  width: fit-content;
+}
+
+.form__input {
+  position: relative;
+  outline: none;
+  box-sizing: border-box;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.form__input--no-border {
+  border: none;
+  resize: none;
+}
+
+.form__input--no-border:focus {
+  border: 2px solid black;
+}
+
+.form__input--red {
+  border: 3px solid rgb(153, 1, 1);
+}
+
+.form__input--red::placeholder {
+  color: rgb(153, 1, 1);
+}
+
+.form__error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgb(153, 1, 1);
+  font-weight: bold;
+}
