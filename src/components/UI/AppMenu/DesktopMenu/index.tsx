@@ -21,7 +21,10 @@ const DesktopMenu: React.FC = () => {
           <StyledLink href={Paths.HOME}>Accueil</StyledLink>
         </StyledLi>
         <StyledLi>
-          <StyledLink href={Paths.RECIPES}>Recettes</StyledLink>
+          <StyledLink href={Paths.RECIPES}>Mes Recettes</StyledLink>
+        </StyledLi>
+        <StyledLi>
+          <StyledLink href={Paths.FAVORITES}>Favories</StyledLink>
         </StyledLi>
         <StyledLi>
           <StyledLink href={Paths.ABOUT}>A Propos</StyledLink>

@@ -4,9 +4,16 @@ import { AllRecipesProps, CategoryType, Recipe } from "./types";
 import { StyledTitle } from "./style";
 import { useCallback, useEffect, useState } from "react";
 import Category from "../Category";
+import useLocalStorage from "use-local-storage";
+import { useRouter } from "next/router";
 
 const AllRecipes: React.FC<AllRecipesProps> = ({ categories, recipes }) => {
+  const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+  const router = useRouter();
+
+  const { favorites: isFavoritesPage } = router.query;
+
   const handleSelectedCategories = useCallback(
     (selectedCategories: CategoryType[]) => {
       if (!(selectedCategories?.length > 0)) {
@@ -26,7 +33,15 @@ const AllRecipes: React.FC<AllRecipesProps> = ({ categories, recipes }) => {
   );
 
   useEffect(() => {
-    setFilteredRecipes(recipes);
+    if (isFavoritesPage) {
+      setFilteredRecipes((prevState) =>
+        prevState
+          ? prevState.filter((recipe) =>
+              favorites.filter((id) => id === recipe._id)
+            )
+          : [prevState]
+      );
+    } else setFilteredRecipes(recipes);
   }, []);
 
   return (

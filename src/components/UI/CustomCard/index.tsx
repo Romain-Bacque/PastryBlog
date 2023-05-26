@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -9,13 +8,14 @@ import Collapse from "@mui/material/Collapse";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CustomCardProps } from "./types";
 import Link from "next/link";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import TagsList from "../TagsList";
+import useLocalStorage from "use-local-storage";
+import { useEffect, useState } from "react";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -43,8 +43,28 @@ const CustomCard: React.FC<CustomCardProps> = ({
   isLinkShown,
   categories,
 }) => {
-  const [expanded, setExpanded] = React.useState(false);
+  const [iconButtonProps, setIconButtonProps] = useState({});
+  const [expanded, setExpanded] = useState(false);
   const router = useRouter();
+  const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
+
+  const isRecipeInFavorites = (id: string) => {
+    const isExists = favorites.find((favorite) => favorite === id);
+
+    return !!isExists;
+  };
+
+  const handleFavorites = (id: string) => {
+    const isExists = isRecipeInFavorites(id);
+
+    if (!isExists) {
+      setFavorites((prevState) => (prevState ? [...prevState, id] : [id]));
+    } else {
+      setFavorites((prevState) =>
+        prevState ? prevState.filter((item) => item !== id) : [id]
+      );
+    }
+  };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -53,6 +73,15 @@ const CustomCard: React.FC<CustomCardProps> = ({
   const handleCardClick = () => {
     router.replace(`recipes/${_id}`);
   };
+
+  useEffect(() => {
+    setIconButtonProps({
+      title: isRecipeInFavorites(_id)
+        ? "Retirer des recettes favories"
+        : "Ajouter aux recettes favories",
+      color: isRecipeInFavorites(_id) ? "secondary" : "default",
+    });
+  }, [favorites]);
 
   return (
     <Card style={{ width: 800, maxWidth: "90%" }}>
@@ -77,11 +106,12 @@ const CustomCard: React.FC<CustomCardProps> = ({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        <IconButton
+          onClick={() => handleFavorites(_id)}
+          {...iconButtonProps}
+          aria-label="add to favorites"
+        >
           <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
         </IconButton>
         <ExpandMore
           expand={expanded}

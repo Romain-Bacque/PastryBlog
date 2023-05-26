@@ -1,7 +1,8 @@
 // enum
 export enum Paths {
-    HOME = "/",
-    RECIPES = "/recipes",
-    ABOUT = "/about",
-    CONTACT = "/contact",
+  HOME = "/",
+  RECIPES = "/recipes",
+  FAVORITES = "/recipes?favorites=true",
+  ABOUT = "/about",
+  CONTACT = "/contact",
 }

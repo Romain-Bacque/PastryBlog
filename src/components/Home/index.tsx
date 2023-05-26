@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import FeaturedCards from "../FeaturedCards";
+import FeaturedCards from "../FeaturedRecipes";
 import { HomeProps } from "./types";
 
 const Home: React.FC<HomeProps> = ({ recipes }) => {

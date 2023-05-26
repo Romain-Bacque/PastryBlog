@@ -98,6 +98,9 @@ function MobileMenu() {
                   <StyledMenuItem onClick={() => handleLink(Paths.RECIPES)}>
                     Mes Recettes
                   </StyledMenuItem>
+                  <StyledMenuItem onClick={() => handleLink(Paths.FAVORITES)}>
+                    Favories
+                  </StyledMenuItem>
                   <StyledMenuItem onClick={() => handleLink(Paths.CONTACT)}>
                     Contact
                   </StyledMenuItem>

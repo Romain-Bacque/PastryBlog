@@ -1,5 +1,5 @@
 // aliases
-export interface FeaturedCardsProps {
+export interface FeaturedRecipesProps {
   recipes:
     | {
         _id: string;

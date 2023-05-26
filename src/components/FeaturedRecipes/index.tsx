@@ -1,8 +1,8 @@
 import { Divider, Stack } from "@mui/material";
 import CustomCard from "../UI/CustomCard";
-import { FeaturedCardsProps } from "./types";
+import { FeaturedRecipesProps } from "./types";
 
-const FeaturedCards: React.FC<FeaturedCardsProps> = ({ recipes }) => {
+const FeaturedRecipes: React.FC<FeaturedRecipesProps> = ({ recipes }) => {
   return (
     <Stack
       justifyContent="center"
@@ -17,4 +17,4 @@ const FeaturedCards: React.FC<FeaturedCardsProps> = ({ recipes }) => {
   );
 };
 
-export default FeaturedCards;
+export default FeaturedRecipes;
