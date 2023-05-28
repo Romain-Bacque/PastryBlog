@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import store from "../store/index";
 import { Provider } from "react-redux";
 import { SessionProvider } from "next-auth/react";
+import { StrictMode } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,6 +17,7 @@ const queryClient = new QueryClient({
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
+    <StrictMode>
     <SessionProvider session={pageProps.session}>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
@@ -32,6 +34,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         </QueryClientProvider>
       </Provider>
     </SessionProvider>
+    </StrictMode>
   );
 };
 

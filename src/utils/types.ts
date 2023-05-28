@@ -7,3 +7,10 @@ export interface UpdatedResponse {
   text: string;
   date: string;
 }
+export interface UserFavorite {
+  userId: string;
+  recipeId: string;
+}
+export interface getUserFavoritesResponse {
+  favorites: string[];
+}

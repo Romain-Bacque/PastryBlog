@@ -28,7 +28,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, "Password cannot be blank"],
+    default: null,
   },
   email: {
     type: String,

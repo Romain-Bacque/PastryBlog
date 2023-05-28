@@ -3,20 +3,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../utils/databaseConnection";
 import { Recipe } from "../../models/Recipe";
 import { Tag } from "../../models/Tag";
-
-// interfaces
-interface Recipe {
-  _id: string;
-  image?: string;
-  title: string;
-  date: string;
-  description: string;
-  content: string;
-}
-interface Tag {
-  _id: string;
-  tag: string;
-}
+import { Recipe as RecipeType, Tag as TagType } from "../../../global/types";
+import { Favorite } from "../../models/Favorite";
+import { RecipeHasCategories } from "../../models/RecipeHasCategories";
 
 if (process.env.NODE_ENV !== "development") {
   console.log = function () {};
@@ -24,11 +13,11 @@ if (process.env.NODE_ENV !== "development") {
   console.trace = function () {};
 }
 
-export async function getFeaturedRecipes(): Promise<Recipe[]> {
+export async function getFeaturedRecipes(): Promise<RecipeType[]> {
   try {
     await dbConnect();
 
-    const recipes: Recipe[] = await Recipe.aggregate([
+    const recipes: RecipeType[] = await Recipe.aggregate([
       { $match: { isFeatured: true } },
       {
         $project: {
@@ -57,7 +46,9 @@ export async function getFeaturedRecipes(): Promise<Recipe[]> {
   }
 }
 
-export async function getRecipeById(recipeId: string): Promise<Recipe | null> {
+export async function getRecipeById(
+  recipeId: string
+): Promise<RecipeType | null> {
   try {
     await dbConnect();
 
@@ -72,7 +63,6 @@ export async function getRecipeById(recipeId: string): Promise<Recipe | null> {
             description: 1,
             content: 1,
             isFeatured: 1,
-            tagId: 1,
             date: {
               $dateToString: {
                 format: "%d-%m-%Y %H:%M:%S",
@@ -85,6 +75,15 @@ export async function getRecipeById(recipeId: string): Promise<Recipe | null> {
       ])
     )[0];
 
+    const recipeHasCategorie = await RecipeHasCategories.find({
+      recipeId,
+    }).populate("tagId");
+
+    // add "categories" field
+    recipe.categories = recipeHasCategorie.map(
+      (recipeHasCategory) => recipeHasCategory.tagId
+    );
+
     return JSON.parse(JSON.stringify(recipe)); // use JSON object to remove new Object class not recognized by JS
   } catch (error) {
     console.error(error);
@@ -92,11 +91,11 @@ export async function getRecipeById(recipeId: string): Promise<Recipe | null> {
   }
 }
 
-export async function getAllRecipes(): Promise<Recipe[]> {
+export async function getAllRecipes(): Promise<RecipeType[]> {
   try {
     await dbConnect();
 
-    const recipes: Recipe[] = await Recipe.aggregate([
+    const recipes: RecipeType[] = await Recipe.aggregate([
       {
         $project: {
           _id: 1,
@@ -117,6 +116,18 @@ export async function getAllRecipes(): Promise<Recipe[]> {
       },
     ]);
 
+    const recipeHasCategorie = await RecipeHasCategories.find({
+      recipeId,
+    }).populate("tagId");
+
+    // add "categories" field
+
+    for await (const recipe of recipes) {
+      recipe.categories = recipeHasCategorie.map(
+        (recipeHasCategory) => recipeHasCategory.tagId
+      );
+    }
+
     return JSON.parse(JSON.stringify(recipes)); // use JSON object to remove new Object class not recognized by JS
   } catch (error) {
     console.error(error);
@@ -124,7 +135,7 @@ export async function getAllRecipes(): Promise<Recipe[]> {
   }
 }
 
-export async function getAllCategories(): Promise<Tag[]> {
+export async function getAllCategories(): Promise<TagType[]> {
   try {
     await dbConnect();
 

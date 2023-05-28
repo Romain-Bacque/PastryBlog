@@ -1,11 +1,17 @@
-PASTRY: name, featured
-CONTAINS, 1N INGREDIENT, 1N PASTRY: quantity
-INGREDIENT: name
-BELONGS TO, 11 INGREDIENT, 1N UNIT
-UNIT: title
-TAG: title
-BELONGS TO, 0N PASTRY, 0N TAG
-COMMENT: name, email, text
-BELONGS TO, 1N PASTRY, 11 COMMENT
-RESPONSE: text, commentId
+RESPONSE: response_ref, text, date
 RESPOND TO, 11 RESPONSE, 0N COMMENT
+COMMENT: email, name, text, date
+BELONGS TO, 0N RECIPE, 0N TAG
+TAG: tag_ref, title
+
+:
+:
+COMMENT TO, 11 COMMENT, 0N RECIPE
+RECIPE: recipe_ref, title, name, description, image, content, date, isFeatured
+:
+
+:
+:
+USER: email, username, password, role
+LIKE, 0N USER, 0N RECIPE
+:

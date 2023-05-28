@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DeleteComment, UpdatedResponse } from "./types";
+import { DeleteComment, UpdatedResponse, UserFavorite, getUserFavoritesResponse } from "./types";
 import {
   Comment,
   ForgotPassword,
@@ -14,7 +14,7 @@ const instance = axios.create({
   withCredentials: true, // authorize cookie sending to server
 });
 
-// User Requests
+// User signing up
 export async function signUp(reqBody: UserRegister) {
   const { username, email, password, csrfToken } = reqBody;
 
@@ -107,4 +107,33 @@ export async function updateResponse({
   id: string;
 }) {
   await instance.patch(`/responses/${id}`, reqBody);
+}
+
+// get user favorites
+export async function getUserFavorites(userId: string) {
+  const response = await instance.get<getUserFavoritesResponse>(
+    `/recipes/favorites?userId=${userId}`
+  );
+
+  return response.data?.favorites;
+}
+
+// add user favorite
+export async function addUserFavorite(reqBody: UserFavorite) {
+  const response = await instance.post<getUserFavoritesResponse>(
+    `/recipes/favorites`,
+    reqBody
+  );
+
+  return response.data?.favorites;
+}
+
+// delete user favorite
+export async function deleteUserFavorite(reqBody: UserFavorite) {
+  const { userId, recipeId } = reqBody;
+  const response = await instance.delete<getUserFavoritesResponse>(
+    `/recipes/favorites?userId=${userId}&recipeId=${recipeId}`
+  );
+
+  return response.data?.favorites;
 }

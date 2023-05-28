@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="561" height="390" viewBox="0 0 561 390" xmlns="http://www.w3.org/2000/svg">
+<rect id="frame" x="0" y="0" width="561" height="390" fill="#f7f7f7" stroke="none" stroke-width="0"/>
+
+<!-- Association RESPOND TO -->
+<g>
+	<line x1="54" y1="60" x2="179" y2="60" stroke="#e08214" stroke-width="2"/>
+	<text x="104" y="77" fill="#542788" font-family="Verdana" font-size="12">1,1</text>
+	<line x1="296" y1="60" x2="179" y2="60" stroke="#e08214" stroke-width="2"/>
+	<text x="232" y="77" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<g>
+		<path d="M213 35 a14 14 90 0 1 14 14 V60 h-96 V49 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
+		<path d="M227 60 v11 a14 14 90 0 1 -14 14 H145 a14 14 90 0 1 -14 -14 V60 H96" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
+		<rect x="131" y="35" width="96" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
+		<line x1="131" y1="60" x2="227" y2="60" stroke="#e08214" stroke-width="1"/>
+		<text x="139" y="52.75" fill="#000" font-family="Verdana" font-size="12">RESPOND TO</text>
+	</g>
+</g>
+
+<!-- Association BELONGS TO -->
+<g>
+	<line x1="416" y1="195" x2="416" y2="60" stroke="#e08214" stroke-width="2"/>
+	<text x="421" y="102" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<line x1="524" y1="60" x2="416" y2="60" stroke="#e08214" stroke-width="2"/>
+	<text x="469" y="77" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<g>
+		<path d="M450 35 a14 14 90 0 1 14 14 V60 h-96 V49 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
+		<path d="M464 60 v11 a14 14 90 0 1 -14 14 H382 a14 14 90 0 1 -14 -14 V60 H96" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
+		<rect x="368" y="35" width="96" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
+		<line x1="368" y1="60" x2="464" y2="60" stroke="#e08214" stroke-width="1"/>
+		<text x="376" y="52.75" fill="#000" font-family="Verdana" font-size="12">BELONGS TO</text>
+	</g>
+</g>
+
+<!-- Association COMMENT TO -->
+<g>
+	<line x1="296" y1="60" x2="296" y2="195" stroke="#e08214" stroke-width="2"/>
+	<text x="301" y="128" fill="#542788" font-family="Verdana" font-size="12">1,1</text>
+	<line x1="416" y1="195" x2="296" y2="195" stroke="#e08214" stroke-width="2"/>
+	<text x="350" y="212" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<g>
+		<path d="M331 170 a14 14 90 0 1 14 14 V195 h-98 V184 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
+		<path d="M345 195 v11 a14 14 90 0 1 -14 14 H261 a14 14 90 0 1 -14 -14 V195 H98" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
+		<rect x="247" y="170" width="98" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
+		<line x1="247" y1="195" x2="345" y2="195" stroke="#e08214" stroke-width="1"/>
+		<text x="254" y="187.75" fill="#000" font-family="Verdana" font-size="12">COMMENT TO</text>
+	</g>
+</g>
+
+<!-- Association LIKE -->
+<g>
+	<line x1="296" y1="330" x2="416" y2="330" stroke="#e08214" stroke-width="2"/>
+	<text x="337" y="347" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<line x1="416" y1="195" x2="416" y2="330" stroke="#e08214" stroke-width="2"/>
+	<text x="421" y="297" fill="#542788" font-family="Verdana" font-size="12">0,N</text>
+	<g>
+		<path d="M424 305 a14 14 90 0 1 14 14 V330 h-44 V319 a14 14 90 0 1 14 -14" fill="#fdb863" stroke="#fdb863" stroke-width="0"/>
+		<path d="M438 330 v11 a14 14 90 0 1 -14 14 H408 a14 14 90 0 1 -14 -14 V330 H44" fill="#fee0b6" stroke="#fee0b6" stroke-width="0"/>
+		<rect x="394" y="305" width="44" height="50" fill="none" rx="14" stroke="#e08214" stroke-width="2"/>
+		<line x1="394" y1="330" x2="438" y2="330" stroke="#e08214" stroke-width="1"/>
+		<text x="402" y="322.75" fill="#000" font-family="Verdana" font-size="12">LIKE</text>
+	</g>
+</g>
+
+<!-- Entity RESPONSE -->
+<g>
+	<g>
+		<rect x="9" y="18" width="90" height="25" fill="#b2abd2" stroke="#b2abd2" stroke-width="0" opacity="1"/>
+		<rect x="9" y="43" width="90" height="59" fill="#d8daeb" stroke="#d8daeb" stroke-width="0" opacity="1"/>
+		<rect x="9" y="18" width="90" height="84" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
+		<line x1="9" y1="43" x2="99" y2="43" stroke="#8073ac" stroke-width="1"/>
+	</g>
+	<text x="21" y="35.75" fill="#000" font-family="Verdana" font-size="12">RESPONSE</text>
+	<text x="14" y="60.8" fill="#000" font-family="Verdana" font-size="12">response_ref</text>
+	<line x1="14" y1="63" x2="93" y2="63" stroke="#000" stroke-width="1"/>
+	<text x="14" y="77.8" fill="#000" font-family="Verdana" font-size="12">text</text>
+	<text x="14" y="94.8" fill="#000" font-family="Verdana" font-size="12">date</text>
+</g>
+
+<!-- Entity COMMENT -->
+<g>
+	<g>
+		<rect x="259" y="9" width="74" height="25" fill="#b2abd2" stroke="#b2abd2" stroke-width="0" opacity="1"/>
+		<rect x="259" y="34" width="74" height="77" fill="#d8daeb" stroke="#d8daeb" stroke-width="0" opacity="1"/>
+		<rect x="259" y="9" width="74" height="102" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
+		<line x1="259" y1="34" x2="333" y2="34" stroke="#8073ac" stroke-width="1"/>
+	</g>
+	<text x="265" y="26.75" fill="#000" font-family="Verdana" font-size="12">COMMENT</text>
+	<text x="264" y="51.8" fill="#000" font-family="Verdana" font-size="12">email</text>
+	<line x1="264" y1="54" x2="298" y2="54" stroke="#000" stroke-width="1"/>
+	<text x="264" y="68.8" fill="#000" font-family="Verdana" font-size="12">name</text>
+	<text x="264" y="85.8" fill="#000" font-family="Verdana" font-size="12">text</text>
+	<text x="264" y="102.8" fill="#000" font-family="Verdana" font-size="12">date</text>
+</g>
+
+<!-- Entity TAG -->
+<g>
+	<g>
+		<rect x="496" y="26" width="56" height="25" fill="#b2abd2" stroke="#b2abd2" stroke-width="0" opacity="1"/>
+		<rect x="496" y="51" width="56" height="43" fill="#d8daeb" stroke="#d8daeb" stroke-width="0" opacity="1"/>
+		<rect x="496" y="26" width="56" height="68" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
+		<line x1="496" y1="51" x2="552" y2="51" stroke="#8073ac" stroke-width="1"/>
+	</g>
+	<text x="511" y="43.75" fill="#000" font-family="Verdana" font-size="12">TAG</text>
+	<text x="501" y="68.8" fill="#000" font-family="Verdana" font-size="12">tag_ref</text>
+	<line x1="501" y1="71" x2="546" y2="71" stroke="#000" stroke-width="1"/>
+	<text x="501" y="85.8" fill="#000" font-family="Verdana" font-size="12">title</text>
+</g>
+
+<!-- Entity RECIPE -->
+<g>
+	<g>
+		<rect x="377" y="110" width="78" height="25" fill="#b2abd2" stroke="#b2abd2" stroke-width="0" opacity="1"/>
+		<rect x="377" y="135" width="78" height="145" fill="#d8daeb" stroke="#d8daeb" stroke-width="0" opacity="1"/>
+		<rect x="377" y="110" width="78" height="170" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
+		<line x1="377" y1="135" x2="455" y2="135" stroke="#8073ac" stroke-width="1"/>
+	</g>
+	<text x="394" y="127.75" fill="#000" font-family="Verdana" font-size="12">RECIPE</text>
+	<text x="382" y="152.8" fill="#000" font-family="Verdana" font-size="12">recipe_ref</text>
+	<line x1="382" y1="155" x2="444" y2="155" stroke="#000" stroke-width="1"/>
+	<text x="382" y="169.8" fill="#000" font-family="Verdana" font-size="12">title</text>
+	<text x="382" y="186.8" fill="#000" font-family="Verdana" font-size="12">name</text>
+	<text x="382" y="203.8" fill="#000" font-family="Verdana" font-size="12">description</text>
+	<text x="382" y="220.8" fill="#000" font-family="Verdana" font-size="12">image</text>
+	<text x="382" y="237.8" fill="#000" font-family="Verdana" font-size="12">content</text>
+	<text x="382" y="254.8" fill="#000" font-family="Verdana" font-size="12">date</text>
+	<text x="382" y="271.8" fill="#000" font-family="Verdana" font-size="12">isFeatured</text>
+</g>
+
+<!-- Entity USER -->
+<g>
+	<g>
+		<rect x="260" y="279" width="72" height="25" fill="#b2abd2" stroke="#b2abd2" stroke-width="0" opacity="1"/>
+		<rect x="260" y="304" width="72" height="77" fill="#d8daeb" stroke="#d8daeb" stroke-width="0" opacity="1"/>
+		<rect x="260" y="279" width="72" height="102" fill="none" stroke="#8073ac" stroke-width="2" opacity="1"/>
+		<line x1="260" y1="304" x2="332" y2="304" stroke="#8073ac" stroke-width="1"/>
+	</g>
+	<text x="279" y="296.75" fill="#000" font-family="Verdana" font-size="12">USER</text>
+	<text x="265" y="321.8" fill="#000" font-family="Verdana" font-size="12">email</text>
+	<line x1="265" y1="324" x2="299" y2="324" stroke="#000" stroke-width="1"/>
+	<text x="265" y="338.8" fill="#000" font-family="Verdana" font-size="12">username</text>
+	<text x="265" y="355.8" fill="#000" font-family="Verdana" font-size="12">password</text>
+	<text x="265" y="372.8" fill="#000" font-family="Verdana" font-size="12">role</text>
+</g>
+</svg>

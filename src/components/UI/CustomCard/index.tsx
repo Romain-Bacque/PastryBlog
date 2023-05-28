@@ -14,8 +14,17 @@ import Link from "next/link";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import TagsList from "../TagsList";
-import useLocalStorage from "use-local-storage";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import useMyMutation from "../../../hooks/use-mutation";
+import { useQuery, useQueryClient } from "react-query";
+import {
+  addUserFavorite,
+  deleteUserFavorite,
+  getUserFavorites,
+} from "../../../utils/ajax-requests";
+import { ExtendedSession } from "../../../global/types";
+import useLoading from "../../../hooks/use-loading";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -33,6 +42,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
+const queryKey = "favorites";
+
 const CustomCard: React.FC<CustomCardProps> = ({
   _id,
   title,
@@ -43,26 +54,95 @@ const CustomCard: React.FC<CustomCardProps> = ({
   isLinkShown,
   categories,
 }) => {
+  const handleLoading = useLoading();
+  const [getFavoritesErrorMessage, setGetFavoritesErrorMessage] =
+    useState<string>("");
   const [iconButtonProps, setIconButtonProps] = useState({});
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
-  const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
+  const { data: session } = useSession();
+  const {
+    status: getFavoritesStatus,
+    data,
+    isError,
+    refetch,
+  } = useQuery(
+    queryKey,
+    async () => {
+      if (session?.user) {
+        const favoritesData = await getUserFavorites(
+          (session as ExtendedSession).user.id!
+        );
 
-  const isRecipeInFavorites = (id: string) => {
-    const isExists = favorites.find((favorite) => favorite === id);
+        return favoritesData;
+      }
+    },
+    {
+      enabled: false, // Automatically prevent the request triggering when the component is mounted
+      staleTime: 3600_000,
+    }
+  );
 
-    return !!isExists;
+  const favorites = data || [];
+
+  const queryClient = useQueryClient();
+
+  const {
+    errorMessage: addFavoriteErrorMessage,
+    useMutation: addFavoriteMutation,
+  } = useMyMutation(addUserFavorite, async () => {
+    await queryClient.cancelQueries(queryKey);
+
+    const prevFavorites = queryClient.getQueryData(queryKey);
+
+    const updatedFavorites = favorites.concat(_id);
+
+    queryClient.setQueryData(queryKey, updatedFavorites);
+
+    return { ctxFunc: () => queryClient.setQueryData(queryKey, prevFavorites) };
+  });
+  const { status: addFavoriteStatus, mutate: addFavoriteMutate } =
+    addFavoriteMutation;
+
+  const {
+    errorMessage: deleteFavoriteErrorMessage,
+    useMutation: deleteFavoriteMutation,
+  } = useMyMutation(deleteUserFavorite, async () => {
+    await queryClient.cancelQueries(queryKey);
+
+    const prevFavorites = queryClient.getQueryData(queryKey);
+    const updatedFavorites = favorites.filter((favorite) => favorite !== _id);
+
+    queryClient.setQueryData(queryKey, updatedFavorites);
+
+    return { ctxFunc: () => queryClient.setQueryData(queryKey, prevFavorites) };
+  });
+  const { status: deleteFavoriteStatus, mutate: deleteFavoriteMutate } =
+    deleteFavoriteMutation;
+
+  const isRecipeInUserFavorites = (RecipeId: string) => {
+    const isInFavoritesList = favorites?.find(
+      (favorite) => favorite === RecipeId
+    );
+
+    return isInFavoritesList;
   };
 
   const handleFavorites = (id: string) => {
-    const isExists = isRecipeInFavorites(id);
+    if (!session) return;
 
-    if (!isExists) {
-      setFavorites((prevState) => (prevState ? [...prevState, id] : [id]));
+    if (!isRecipeInUserFavorites(id)) {
+      // add favorite
+      addFavoriteMutate({
+        userId: (session as ExtendedSession).user.id!,
+        recipeId: id,
+      });
     } else {
-      setFavorites((prevState) =>
-        prevState ? prevState.filter((item) => item !== id) : [id]
-      );
+      // remove favorite
+      deleteFavoriteMutate({
+        userId: (session as ExtendedSession).user.id!,
+        recipeId: id,
+      });
     }
   };
 
@@ -76,12 +156,43 @@ const CustomCard: React.FC<CustomCardProps> = ({
 
   useEffect(() => {
     setIconButtonProps({
-      title: isRecipeInFavorites(_id)
+      title: !session
+        ? "Vous devez être connecté pour pouvoir ajouter une recette en favories"
+        : isRecipeInUserFavorites(_id)
         ? "Retirer des recettes favories"
         : "Ajouter aux recettes favories",
-      color: isRecipeInFavorites(_id) ? "secondary" : "default",
+      color: session && isRecipeInUserFavorites(_id) ? "secondary" : "default",
     });
-  }, [favorites]);
+  }, [data]);
+
+  useEffect(() => {
+    if (session?.user) {
+      // get user favorites
+      refetch();
+    }
+  }, []);
+
+  useEffect(() => {
+    // handle get favorite error message handler
+    if (isError) {
+      setGetFavoritesErrorMessage("Une erreur est survenue!");
+    }
+  }, []);
+
+  // get favorite snackbar
+  useEffect(() => {
+    handleLoading(getFavoritesStatus, null, getFavoritesErrorMessage);
+  }, [getFavoritesStatus, getFavoritesErrorMessage]);
+
+  // add favorite snackbar
+  useEffect(() => {
+    handleLoading(addFavoriteStatus, null, addFavoriteErrorMessage);
+  }, [addFavoriteStatus, null, addFavoriteErrorMessage]);
+
+  // delete favorite snackbar
+  useEffect(() => {
+    handleLoading(deleteFavoriteStatus, null, deleteFavoriteErrorMessage);
+  }, [deleteFavoriteStatus, null, deleteFavoriteErrorMessage]);
 
   return (
     <Card style={{ width: 800, maxWidth: "90%" }}>
@@ -107,7 +218,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
       </CardContent>
       <CardActions disableSpacing>
         <IconButton
-          onClick={() => handleFavorites(_id)}
+          onClick={() => session && handleFavorites(_id)}
           {...iconButtonProps}
           aria-label="add to favorites"
         >

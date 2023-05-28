@@ -183,3 +183,13 @@ export const postBookingSchema = joi
     categories: joi.array().items(joi.number().min(1).required()),
   })
   .required();
+
+/**
+ * favoriteSchema monitor the post favorite request body, and return an error if any of requirements doesn't match with it
+ */
+export const favoriteSchema = joi
+  .object({
+    userId: joi.string().escapeHTML().required(),
+    recipeId: joi.string().escapeHTML().required(),
+  })
+  .required();

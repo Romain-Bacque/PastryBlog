@@ -1,16 +1,10 @@
 import AllRecipes from "../../components/AllRecipes";
 import Loader from "../../components/UI/Loader";
+import { Recipe } from "../../global/types";
 import { getAllCategories, getAllRecipes } from "../api/recipes";
 
 interface AllRecipesProps {
-  recipes: {
-    _id: string;
-    image?: string;
-    title: string;
-    date: string;
-    description: string;
-    content: string;
-  }[];
+  recipes: Recipe[];
   categories: { _id: string; tag: string }[];
 }
 

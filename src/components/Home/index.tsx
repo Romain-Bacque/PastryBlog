@@ -1,11 +1,11 @@
 import { Container } from "@mui/material";
-import FeaturedCards from "../FeaturedRecipes";
+import FeaturedRecipes from "../FeaturedRecipes";
 import { HomeProps } from "./types";
 
 const Home: React.FC<HomeProps> = ({ recipes }) => {
   return (
     <Container component="section">
-      <FeaturedCards recipes={recipes} />
+      <FeaturedRecipes recipes={recipes} />
     </Container>
   );
 };

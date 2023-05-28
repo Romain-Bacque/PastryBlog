@@ -46,6 +46,10 @@ export interface Recipe {
   description: string;
   content: string;
 }
+export interface Tag {
+  _id: string;
+  tag: string;
+}
 export interface Comment {
   _id: string;
   name: string;
@@ -63,6 +67,7 @@ export interface Response {
 
 export interface ExtendedSession extends Session {
   user: {
+    id?: string | null | undefined;
     name?: string | null | undefined;
     email?: string | null | undefined;
     image?: string | null | undefined;

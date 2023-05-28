@@ -37,7 +37,7 @@ function useMyMutation<T extends HTTPRequestType>(
           setErrorMessage("Une erreur est survenue.");
       }
 
-      if (context && context.ctxFunc) context.ctxFunc();
+      if (context?.ctxFunc) context.ctxFunc();
     },
   });
 

@@ -16,5 +16,5 @@ export interface Recipe {
 export interface AllRecipesProps {
   recipes: Recipe[];
   categories: CategoryType[];
-  isFavoritesPage: boolean | null | undefined;
+  isFavoritesPage?: boolean | null | undefined;
 }
