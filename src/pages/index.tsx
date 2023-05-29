@@ -36,7 +36,7 @@ export default HomePage;
 
 export async function getStaticProps() {
   const recipes = await getFeaturedRecipes();
-
+console.log(recipes)
   return {
     props: {
       recipes,

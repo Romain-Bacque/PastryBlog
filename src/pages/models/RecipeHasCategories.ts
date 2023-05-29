@@ -1,8 +1,9 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { Recipe, Tag } from "../../global/types";
 
-interface IRecipeHasCategories extends Document {
-  tagId: string;
-  recipeId: string;
+export interface IRecipeHasCategories extends Document {
+  tagId: Schema.Types.ObjectId | Tag;
+  recipeId: Schema.Types.ObjectId | Recipe;
 }
 
 const recipeHasCategoriesSchema = new Schema({

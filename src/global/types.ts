@@ -38,6 +38,10 @@ export interface AlertMessageState {
   severity: SnackbarSeverityKind | null;
   isOpen: boolean;
 }
+export interface Tag {
+  _id: string;
+  tag: string;
+}
 export interface Recipe {
   _id: string;
   image?: string;
@@ -45,10 +49,7 @@ export interface Recipe {
   date: string;
   description: string;
   content: string;
-}
-export interface Tag {
-  _id: string;
-  tag: string;
+  categories: (Tag | undefined)[];
 }
 export interface Comment {
   _id: string;
@@ -64,7 +65,6 @@ export interface Response {
   text: string;
   commentId: string;
 }
-
 export interface ExtendedSession extends Session {
   user: {
     id?: string | null | undefined;
