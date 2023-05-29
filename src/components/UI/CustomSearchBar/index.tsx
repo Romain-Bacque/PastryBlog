@@ -21,10 +21,9 @@ function CustomSearchbar() {
     blurHandler: searchbarEntryBlurHandler,
   } = useInput();
   const router = useRouter();
-  const [selectedValue, setSelectedValue] = useState<Recipe | string | null>(
-    ""
-  );
+  const [selectedValue, setSelectedValue] = useState<Recipe | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isSearchBarSelected, setIsSearchBarSelected] = useState(false);
   const getRecipesData = useRef(
     // 'debounce' prevent server spamming, and authorize ajax request a number of milliseconds after input value stopped change
     debounce(async (value) => {
@@ -62,7 +61,7 @@ function CustomSearchbar() {
   return (
     <Autocomplete
       freeSolo
-      onChange={(_, value) => setSelectedValue(value)}
+      onChange={(_, value) => setSelectedValue(value as Recipe | null)}
       onBlur={() => setRecipes([])}
       options={recipes} // 'recipes' is the list defined for autocompletion
       getOptionLabel={(option) =>
@@ -73,8 +72,8 @@ function CustomSearchbar() {
         <TextField
           onKeyDown={(event) => {
             if (event.key === "Enter") {
-              console.log(selectedValue);
-              router.replace(`/recipeDetails/${selectedValue._id}`)
+              if (!selectedValue || !("_id" in selectedValue)) return;
+              router.replace(`/recipes/${selectedValue._id}`);
             }
           }}
           label="recipe"
@@ -88,7 +87,14 @@ function CustomSearchbar() {
           placeholder="Rechercher une recette..."
           InputProps={{
             ...params.InputProps,
-            endAdornment: <SearchIcon />,
+            startAdornment: (
+              <SearchIcon
+                onClick={() => setIsSearchBarSelected(!isSearchBarSelected)}
+                sx={{
+                  cursor: "pointer",
+                }}
+              />
+            ),
           }}
         />
       )}
