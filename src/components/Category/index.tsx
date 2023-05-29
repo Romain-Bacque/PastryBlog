@@ -11,11 +11,14 @@ import TagsList from "../UI/TagsList";
 // types import
 import { Categorie, CategoryProps } from "./types";
 
+const defaultValue = "Choisir une catégorie";
+
 // Component
 const Category: React.FC<CategoryProps> = ({
   categories,
   onSelectedCategories,
 }) => {
+  const [selectedValue, setSelectedValue] = useState(defaultValue);
   const [selectedCategoriesList, setSelectedCategoriesList] = useState<
     Categorie[]
   >([]);
@@ -27,16 +30,13 @@ const Category: React.FC<CategoryProps> = ({
 
     if (!id) return; // Prevent to select option with "Choisir une catégorie" value
 
-    if (
-      !selectedCategoriesList.find(
-        (category) => Number(category._id) === Number(id)
-      )
-    ) {
+    if (!selectedCategoriesList.find((category) => category._id === id)) {
       setSelectedCategoriesList((prevState) => [
         ...prevState,
         { _id: id, tag },
       ]);
     }
+    setSelectedValue(defaultValue);
   };
 
   const handleTagDelete = (value: Categorie) => {
@@ -63,9 +63,9 @@ const Category: React.FC<CategoryProps> = ({
           Quelle catégorie(s) de patisserie(s) ?
         </InputLabel>
         <NativeSelect
-          defaultValue="Choisir une catégorie"
           id="category"
           onChange={handleOptionSelect}
+          value={selectedValue}
         >
           <option key={null} id="" disabled>
             Choisir une catégorie

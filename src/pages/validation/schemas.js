@@ -137,6 +137,42 @@ export const editBrewerySchema = joi
   .required();
 
 /**
+ * addCommentSchema monitor the post comment request body, and return an error if any of requirements doesn't match with it
+ */
+export const addCommentSchema = joi
+  .object({
+    name: joi.string().escapeHTML().required(),
+    email: joi
+      .string()
+      .escapeHTML()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "fr", "net"] } }),
+    date: joi.date(),
+    text: joi.string().escapeHTML().required(),
+    pastryId: joi.string().escapeHTML().required(),
+  })
+  .required();
+
+/**
+ * addResponseSchema monitor the post response request body, and return an error if any of requirements doesn't match with it
+ */
+export const addResponseSchema = joi
+  .object({
+    date: joi.date(),
+    text: joi.string().escapeHTML().required(),
+  })
+  .required();
+
+/**
+ * updateResponseSchema monitor the update response request body, and return an error if any of requirements doesn't match with it
+ */
+export const updateResponseSchema = joi
+  .object({
+    date: joi.date(),
+    text: joi.string().escapeHTML().required(),
+  })
+  .required();
+
+/**
  * emailSchema monitor the forget password request body, and return an error if any of requirements doesn't match with it
  */
 export const emailSchema = joi

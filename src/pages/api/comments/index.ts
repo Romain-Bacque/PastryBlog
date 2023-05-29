@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../utils/databaseConnection";
 import { Comment } from "../../models/Comment";
+import { validate } from "../../validation/validate";
+import { addCommentSchema } from "../../validation/schemas";
 
 interface Comment {
   email: string;
@@ -21,15 +23,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { email, name, text, pastryId } = req.body;
+    const isValidated = validate(addCommentSchema, req.body);
 
-    if (
-      !email.includes("@") ||
-      !name ||
-      name.trim() === "" ||
-      !text ||
-      text.trim() === ""
-    ) {
+    if (!isValidated) {
       res.status(422).json({ message: "Invalid input." });
       return;
     }
@@ -38,10 +34,7 @@ export default async function handler(
       await dbConnect();
 
       const newComment = {
-        email,
-        name,
-        text,
-        pastryId,
+        ...req.body,
       };
 
       const comment = await Comment.create(newComment);

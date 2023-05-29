@@ -1,8 +1,7 @@
-// aliases
-export type Category = { _id: string; tag: string };
+import { Tag } from "../../../global/types";
 
 // interfaces
 export interface TagsListProps {
-  onTagDelete?: (arg: Category) => void;
-  list?: Category[];
+  onTagDelete?: (arg: Tag) => void;
+  list?: Tag[];
 }

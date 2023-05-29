@@ -30,20 +30,9 @@ const ResponseForm: React.FC<ResponseFormProps> = ({
     event.preventDefault();
     if (!adminCommentIsValid) return;
 
-    const formattedDate = new Date().toLocaleDateString("fr", {
-      day: "numeric",
-      month: "long", // 1 => "January"
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false,
-    });
-
     const reqBody = {
-      date: formattedDate,
+      date: new Date(),
       text: adminCommentValue,
-      commentId,
     };
 
     mutate({ reqBody, commentId, pastryId });

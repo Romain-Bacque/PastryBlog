@@ -1,9 +1,7 @@
+import { Recipe } from "../../global/types";
+
 // aliases
-export interface RecipeDetailsProps {
-  _id: string;
-  image?: string;
-  title: string;
-  date: string;
-  description: string;
-  content: string;
-}
+export type RecipeDetailsProps = Omit<Recipe, "categories"> & {
+  content?: string;
+};
+export type Type = RecipeDetailsProps;

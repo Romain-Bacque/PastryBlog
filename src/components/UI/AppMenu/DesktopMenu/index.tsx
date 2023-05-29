@@ -31,9 +31,6 @@ const DesktopMenu: React.FC = () => {
         <StyledLi>
           <StyledLink href={Paths.ABOUT}>A Propos</StyledLink>
         </StyledLi>
-        <StyledLi>
-          <StyledLink href={Paths.CONTACT}>Contact</StyledLink>
-        </StyledLi>
         <Button variant="outlined" onClick={handleAuth}>
           {!session?.user ? "Se connecter" : "Se déconnecter"}
         </Button>

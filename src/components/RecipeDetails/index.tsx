@@ -1,4 +1,3 @@
-import { Recipe } from "../../global/types";
 import CommentForm from "../CommentForm";
 import Comments from "../Comments";
 import {
@@ -8,8 +7,9 @@ import {
   StyledTitle,
 } from "./style";
 import { Box, Container, Divider, Typography } from "@mui/material";
+import { RecipeDetailsProps } from "./types";
 
-const RecipeDetails: React.FC<Recipe> = ({
+const RecipeDetails: React.FC<RecipeDetailsProps> = ({
   _id,
   image,
   title,

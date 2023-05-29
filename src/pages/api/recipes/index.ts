@@ -175,7 +175,6 @@ export async function getAllRecipes(): Promise<RecipeType[]> {
           description: 1,
           content: 1,
           isFeatured: 1,
-          tagId: 1,
           date: {
             $dateToString: {
               format: "%d-%m-%Y %H:%M:%S",

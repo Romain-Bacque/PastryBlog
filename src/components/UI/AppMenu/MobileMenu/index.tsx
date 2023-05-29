@@ -103,9 +103,6 @@ function MobileMenu() {
                       Favories
                     </StyledMenuItem>
                   )}
-                  <StyledMenuItem onClick={() => handleLink(Paths.CONTACT)}>
-                    Contact
-                  </StyledMenuItem>
                   <StyledMenuItem onClick={() => handleLink(Paths.ABOUT)}>
                     A propos
                   </StyledMenuItem>

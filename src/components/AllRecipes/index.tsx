@@ -1,12 +1,12 @@
 import { Container, Divider, Stack } from "@mui/material";
 import CustomCard from "../UI/CustomCard";
-import { AllRecipesProps, CategoryType, Recipe } from "./types";
+import { AllRecipesProps } from "./types";
 import { StyledTitle } from "./style";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Category from "../Category";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Tag } from "../../global/types";
+import { Recipe, Tag } from "../../global/types";
 
 const AllRecipes: React.FC<AllRecipesProps> = ({
   categories,
@@ -14,39 +14,18 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
   isFavoritesPage,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const { data: session } = useSession();
   const router = useRouter();
 
-  const handleSelectedCategories = useCallback(
-    (selectedCategories: CategoryType[]) => {
-      if (!(selectedCategories?.length > 0)) {
-        setFilteredRecipes(recipes);
-        return;
-      }
-
-      const filteredRecipes = recipes.filter((recipe) =>
-        selectedCategories.some(
-          (selectedCategorie) => selectedCategorie._id === recipe.tagId
-        )
-      );
-
-      setFilteredRecipes(filteredRecipes);
-    },
-    []
-  );
-
   const hasSelectedTag = (recipe: Recipe, categoryList: Tag[]) => {
     const filteredList = categoryList.filter((object1) => {
-      const filteredBrewery = recipe.categories.some(
-        (object2) => Number(object1._id) === Number(object2.id)
+      const filteredRecipe = recipe.categories.some(
+        (object2) => object1._id === object2?._id
       );
-      return filteredBrewery;
+      return filteredRecipe;
     });
     return !!filteredList.length;
   };
-
-  useEffect(() => setFilteredRecipes(recipes), []);
 
   // redirect user if he is not logged
   useEffect(() => {
@@ -58,7 +37,7 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
       <StyledTitle component="h2">{`${
         isFavoritesPage ? "Recettes favories" : "Toutes mes recettes"
       }`}</StyledTitle>
-      {filteredRecipes?.length > 0 && (
+      {recipes?.length > 0 && (
         <Category
           categories={categories}
           onSelectedCategories={setSelectedCategories}
@@ -71,8 +50,8 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
         spacing={10}
         divider={<Divider orientation="horizontal" flexItem />}
       >
-        {filteredRecipes?.length > 0 ? (
-          filteredRecipes
+        {recipes?.length > 0 ? (
+          recipes
             .filter((filteredRecipe) => {
               if (!selectedCategories.length) return true; // If there is no category selected, then filter by category is not applied
               return hasSelectedTag(filteredRecipe, selectedCategories); // filter by selected category(ies)
@@ -81,7 +60,7 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
               <CustomCard
                 key={filteredRecipe._id}
                 _id={filteredRecipe._id}
-                categories={categories}
+                categories={filteredRecipe.categories}
                 isLinkShown
                 title={filteredRecipe.title}
                 date={filteredRecipe.date}

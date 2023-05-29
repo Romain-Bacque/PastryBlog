@@ -1,17 +1,11 @@
 import Home from "../components/Home";
 import Loader from "../components/UI/Loader";
+import { Recipe } from "../global/types";
 import { getFeaturedRecipes } from "./api/recipes";
 
-// aliases
+// interfaces
 interface HomePageProps {
-  recipes: {
-    _id: string;
-    image?: string;
-    title: string;
-    date: string;
-    description: string;
-    content: string;
-  }[];
+  recipes: Recipe[];
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
@@ -36,7 +30,7 @@ export default HomePage;
 
 export async function getStaticProps() {
   const recipes = await getFeaturedRecipes();
-console.log(recipes)
+
   return {
     props: {
       recipes,

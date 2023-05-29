@@ -1,12 +1,5 @@
-export type Category = { _id: string; tag: string };
+import { Recipe } from "../../../global/types";
 
-export interface CustomCardProps {
-  _id: string;
-  title: string;
-  date: string;
-  image?: string;
-  description: string;
-  content: string;
+export interface CustomCardProps extends Recipe {
   isLinkShown: boolean;
-  categories?: Category[];
 }

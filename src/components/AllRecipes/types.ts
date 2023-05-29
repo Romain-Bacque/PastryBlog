@@ -1,20 +1,8 @@
-// aliases
-export interface CategoryType {
-  _id: string;
-  tag: string;
-}
-export interface Recipe {
-  _id: string;
-  image?: string;
-  title: string;
-  date: string;
-  description: string;
-  content: string;
-  tagId: string;
-}
+import { Recipe, Tag } from "../../global/types";
 
+// interfaces
 export interface AllRecipesProps {
   recipes: Recipe[];
-  categories: CategoryType[];
+  categories: Tag[];
   isFavoritesPage?: boolean | null | undefined;
 }

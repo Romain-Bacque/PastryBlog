@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import Chip from "@mui/material/Chip";
 // styled component import
 import { ListItem, StyledPaper } from "./style";
-import { Category, TagsListProps } from "./types";
+import { TagsListProps } from "./types";
+import { Tag } from "../../../global/types";
 
 // Component
 const TagsList: React.FC<TagsListProps> = ({ onTagDelete, list }) => {
-  const [chipData, setChipData] = useState<Category[]>([]);
+  const [chipData, setChipData] = useState<Tag[]>([]);
 
-  const handleDelete = (chipToDelete: Category) => () => {
+  const handleDelete = (chipToDelete: Tag) => () => {
     if (onTagDelete) {
       setChipData((chips) =>
         chips.filter((chip) => chip._id !== chipToDelete._id)

@@ -49,7 +49,7 @@ export interface Recipe {
   date: string;
   description: string;
   content: string;
-  categories: (Tag | undefined)[];
+  categories: Tag[];
 }
 export interface Comment {
   _id: string;

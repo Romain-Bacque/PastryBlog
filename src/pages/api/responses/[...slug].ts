@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Comment } from "../../models/Comment";
 import { Response } from "../../models/Response";
+import { validate } from "../../validation/validate";
+import { addResponseSchema } from "../../validation/schemas";
 
 if (process.env.NODE_ENV !== "development") {
   console.log = function () {};
@@ -15,16 +17,16 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const [commentId] = req.query.slug!;
-    const { text } = req.body;
 
-    if (!text.trim()) {
+    const isValidated = validate(addResponseSchema, req.body);
+
+    if (!isValidated) {
       res.status(422).json({ message: "Invalid input." });
       return;
     }
 
     const newResponse = {
-      date: new Date(),
-      text,
+      ...req.body,
       commentId,
     };
 

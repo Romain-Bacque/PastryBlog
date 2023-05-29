@@ -80,7 +80,6 @@ export async function addResponse(params: {
   reqBody: Response;
 }) {
   const { commentId, pastryId, reqBody } = params;
-
   const response = await instance.post(
     `/responses/${commentId}/${pastryId}`,
     reqBody
