@@ -31,7 +31,7 @@ function useMyMutation<T extends HTTPRequestType>(
           setErrorMessage("Accès non autorisé.");
           break;
         case 409:
-          setErrorMessage("Utilisateur déjà enregistré.");
+          setErrorMessage("Utilisateur/ressource déjà enregistré.");
           break;
         default:
           setErrorMessage("Une erreur est survenue.");

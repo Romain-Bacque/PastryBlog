@@ -19,7 +19,7 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
 
   const hasSelectedTag = (recipe: Recipe, categoryList: Tag[]) => {
     const filteredList = categoryList.filter((object1) => {
-      const filteredRecipe = recipe.categories.some(
+      const filteredRecipe = recipe.categories?.some(
         (object2) => object1._id === object2?._id
       );
       return filteredRecipe;
