@@ -10,9 +10,13 @@ const FeaturedRecipes: React.FC<FeaturedRecipesProps> = ({ recipes }) => {
       spacing={10}
       divider={<Divider orientation="horizontal" flexItem />}
     >
-      {recipes.map((recipe) => (
-        <CustomCard isLinkShown {...recipe} key={recipe._id} />
-      ))}
+      {recipes.length > 0 ? (
+        recipes.map((recipe) => (
+          <CustomCard isLinkShown {...recipe} key={recipe._id} />
+        ))
+      ) : (
+        <p>Aucune Recette en vedette.</p>
+      )}
     </Stack>
   );
 };
