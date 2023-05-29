@@ -51,6 +51,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true,
+    fallback: true, // When fallback is set to true, it enables fallback mode for paths that are not pre-rendered statically.
   };
 }

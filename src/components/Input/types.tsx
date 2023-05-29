@@ -1,3 +1,4 @@
+import { AutocompleteRenderInputParams } from "@mui/material";
 import {
   ChangeEventHandler,
   FocusEventHandler,
@@ -11,6 +12,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className: string;
   label?: string;
   input: {
+    params?: AutocompleteRenderInputParams,
     readOnly?: boolean;
     rows?: number;
     id: string;

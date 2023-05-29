@@ -40,9 +40,11 @@ const inputReducer = (state: InputState, action: InputAction): InputState => {
     if (typeof action.value === "string") {
       return {
         ...state,
+        isValid: true,
         enteredValue: action.value,
       };
     }
+    return { ...state, isValid: false, enteredValue: "" };
   }
   if (action.type === InputStateKind.CHANGE) {
     const actionValue = action.value as HTMLInputElement;
