@@ -1,16 +1,17 @@
 // hook import
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // other import
 import { debounce } from "lodash";
 import axios from "axios";
 // component import
-import { Autocomplete } from "@mui/material";
-import Input from "../../Input";
+import { Autocomplete, TextField } from "@mui/material";
 import useInput from "../../../hooks/use-input";
 import { Recipe } from "../../../global/types";
+import SearchIcon from "@mui/icons-material/Search";
+import { useRouter } from "next/router";
 
 // Component
-function CustomSearchbar({ recipe }) {
+function CustomSearchbar() {
   const {
     value: searchbarEntryValue,
     isValid: searchbarEntryIsValid,
@@ -19,7 +20,10 @@ function CustomSearchbar({ recipe }) {
     changeHandler: searchbarEntryChangeHandler,
     blurHandler: searchbarEntryBlurHandler,
   } = useInput();
-  const [selectedValue, setSelectedValue] = useState("");
+  const router = useRouter();
+  const [selectedValue, setSelectedValue] = useState<Recipe | string | null>(
+    ""
+  );
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const getRecipesData = useRef(
     // 'debounce' prevent server spamming, and authorize ajax request a number of milliseconds after input value stopped change
@@ -29,11 +33,11 @@ function CustomSearchbar({ recipe }) {
       if (value) {
         try {
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_HOST_NAME}/api/recipes?text=${value}`
+            `${process.env.NEXT_PUBLIC_HOST_NAME}/api/recipes?search=${value}`
           );
 
           if (response.status === 200) {
-            data = response.data.recipes;
+            data = response.data;
           }
         } catch (err) {
           console.log(err);
@@ -50,8 +54,10 @@ function CustomSearchbar({ recipe }) {
   }, [searchbarEntryIsValid, searchbarEntryValue]);
 
   useEffect(() => {
-    getRecipesData.cancel();
-  }, [getRecipesData]);
+    return () => {
+      getRecipesData.cancel(); // Throw away any pending invocation of the debounced function.
+    };
+  }, []);
 
   return (
     <Autocomplete
@@ -59,21 +65,30 @@ function CustomSearchbar({ recipe }) {
       onChange={(_, value) => setSelectedValue(value)}
       onBlur={() => setRecipes([])}
       options={recipes} // 'recipes' is the list defined for autocompletion
-      getOptionLabel={(option) => (option.title ? option.title : "")} // Display the 'title' property value of each object from the array of object provide in 'options' prop
+      getOptionLabel={(option) =>
+        option instanceof Object && option.title ? option.title : ""
+      } // Display the 'title' property value of each object from the array of object provide in 'options' prop
+      defaultValue={null}
       renderInput={(params) => (
-        <Input
-          onMouseEnter={() => console.log(selectedValue)}
+        <TextField
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              console.log(selectedValue);
+              router.replace(`/recipeDetails/${selectedValue._id}`)
+            }
+          }}
           label="recipe"
-          className={""}
-          input={{
-            params,
-            rows: 6,
-            id: "comment",
-            onChange: searchbarEntryChangeHandler,
-            onBlur: searchbarEntryBlurHandler,
-            type: "textarea",
-            value: searchbarEntryValue,
-            placeholder: "Rechercher une recette...",
+          {...params}
+          rows={6}
+          id="comment"
+          onChange={searchbarEntryChangeHandler}
+          onBlur={searchbarEntryBlurHandler}
+          type="textarea"
+          value={searchbarEntryValue}
+          placeholder="Rechercher une recette..."
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: <SearchIcon />,
           }}
         />
       )}
@@ -81,8 +96,4 @@ function CustomSearchbar({ recipe }) {
   );
 }
 
-CustomSearchbar.defaultProps = {
-  recipe: null,
-};
-
-export default memo(CustomSearchbar);
+export default CustomSearchbar;

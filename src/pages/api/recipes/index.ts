@@ -185,7 +185,7 @@ export async function getAllRecipes(): Promise<RecipeType[]> {
         },
       },
     ]);
-    
+
     const formattedRecipes = await Promise.all(recipes.map(formatRecipe)); // Promise.all takes an array of promises and returns a new promise that resolves when all the input promises have resolved, or rejects if any of them reject.
 
     return JSON.parse(JSON.stringify(formattedRecipes)); // use JSON object to remove new Object class not recognized by JS
@@ -205,5 +205,27 @@ export async function getAllCategories(): Promise<TagType[]> {
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === "GET") {
+    try {
+      await dbConnect();
+
+      const { search } = req.query;
+
+      const recipes = await Recipe.find({
+        title: { $regex: search, $options: "i" },
+      }).select({ _id: 1, title: 1 });
+
+      res.status(200).json(recipes);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Impossible to find a favorite!" });
+    }
   }
 }

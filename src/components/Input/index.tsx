@@ -23,7 +23,7 @@ const Input: React.FC<InputProps> = ({
         {input.type !== "textarea" && (
           <div className={classes["form__input-container"]}>
             <input
-              className={`${classes.form__input} ${classes[className]}`}
+              className={`${classes.form__input} ${className && classes[className]}`}
               {...input}
             />
             {icon}
@@ -37,7 +37,7 @@ const Input: React.FC<InputProps> = ({
         )}
         {input.type === "textarea" && (
           <textarea
-            className={`${classes.form__input} ${classes[className]}`}
+            className={`${classes.form__input} ${className && classes[className]}`}
             {...input}
           />
         )}

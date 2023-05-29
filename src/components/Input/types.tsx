@@ -9,7 +9,7 @@ import {
 // InputHTMLAttributes<HTMLInputElement> represents all HTML Input Element attributes, other attributes are not authorized
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: JSX.Element;
-  className: string;
+  className?: string;
   label?: string;
   input: {
     params?: AutocompleteRenderInputParams,
