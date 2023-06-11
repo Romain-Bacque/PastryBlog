@@ -62,8 +62,8 @@ function MobileMenu() {
 
   return (
     <>
-      <IconButton ref={anchorRef} onClick={() => setOpen(true)} size="large">
-        <StyledMenuRounded fontSize="large" />
+      <IconButton ref={anchorRef} onClick={() => setOpen(true)} size="small">
+        <StyledMenuRounded fontSize="small" />
       </IconButton>
       <Popper
         open={open}

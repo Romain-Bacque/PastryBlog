@@ -16,6 +16,7 @@ import useLoading from "../../hooks/use-loading";
 import { signUp } from "../../utils/ajax-requests";
 import dynamic from "next/dynamic";
 import GoogleButton from "react-google-button";
+import { RuleNames } from "react-password-checklist";
 
 // react-password-checklist module is called only in CSR, when it is needed
 const ReactPasswordChecklist = dynamic(
@@ -25,11 +26,16 @@ const ReactPasswordChecklist = dynamic(
   }
 );
 
+const initialState = {
+  password: true,
+  confirm: true,
+};
+
 // Component
 const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
   const handleLoading = useLoading();
   const [alertMessage, setAlertMessage] = useState<string>("");
-  const [isPasswordMasked, setIsPasswordMasked] = useState(true);
+  const [PasswordMasked, setPasswordMasked] = useState(initialState);
   const [isRegistered, setIsRegistered] = useState(true);
   const router = useRouter();
   const { data: session } = useSession();
@@ -57,6 +63,14 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
     blurHandler: passwordBlurHandler,
     resetHandler: passwordResetHandler,
   } = useInput();
+  const {
+    value: confirmPasswordValue,
+    isValid: confirmPasswordIsValid,
+    isTouched: confirmPasswordIsTouched,
+    changeHandler: confirmPasswordChangeHandler,
+    blurHandler: confirmPasswordBlurHandler,
+    resetHandler: confirmPasswordResetHandler,
+  } = useInput();
 
   const { errorMessage: loginErrorMessage, useMutation: useLoginMutation } =
     useMyMutation(
@@ -77,6 +91,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
     usernameResetHandler();
     emailResetHandler();
     passwordResetHandler();
+    confirmPasswordResetHandler();
     setAlertMessage("Vous êtes enregistré avec succès !");
   });
   const { status: registerStatus, mutate: registerMutate } =
@@ -84,7 +99,10 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
 
   const isFormValid = isRegistered
     ? emailIsValid && passwordIsValid
-    : usernameIsValid && emailIsValid && passwordIsValid;
+    : usernameIsValid &&
+      emailIsValid &&
+      passwordIsValid &&
+      (!isRegistered && passwordValue === confirmPasswordValue);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -118,7 +136,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
     usernameResetHandler();
     emailResetHandler();
     passwordResetHandler();
-    setIsPasswordMasked(true);
+    setPasswordMasked(initialState);
     setIsRegistered(!isRegistered);
   };
 
@@ -136,6 +154,20 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
   useEffect(() => {
     if (session) router.replace("/");
   });
+
+  // Define an array to hold the password rules
+  const passwordRules: RuleNames[] = [
+    "minLength", // Password must have a minimum length
+    "number", // Password must contain at least one number
+    "lowercase", // Password must contain at least one lowercase letter
+    "capital", // Password must contain at least one uppercase letter
+    "specialChar", // Password must contain at least one special character
+  ];
+
+  // Conditionally add the "match" rule if user is NOT registered
+  if (!isRegistered) {
+    passwordRules.push("match"); // Password must match the confirmation password
+  }
 
   return (
     <>
@@ -191,8 +223,13 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
             icon={
               <FontAwesomeIcon
                 className="icon"
-                onClick={() => setIsPasswordMasked((prevState) => !prevState)}
-                icon={isPasswordMasked ? faEyeSlash : faEye}
+                onClick={() =>
+                  setPasswordMasked((prevState) => ({
+                    ...prevState,
+                    password: !prevState.password,
+                  }))
+                }
+                icon={PasswordMasked.password ? faEyeSlash : faEye}
               />
             }
             label="Entrer le mot de passe :"
@@ -202,7 +239,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
             input={{
               readOnly: false,
               id: "password",
-              type: `${isPasswordMasked ? "password" : "text"}`,
+              type: `${PasswordMasked.password ? "password" : "text"}`,
               value: passwordValue,
               onChange: passwordChangeHandler,
               onBlur: passwordBlurHandler,
@@ -210,23 +247,51 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
             }}
             name="password"
           />
+          {!isRegistered && (
+            <Input
+              icon={
+                <FontAwesomeIcon
+                  className="icon"
+                  onClick={() =>
+                    setPasswordMasked((prevState) => ({
+                      ...prevState,
+                      confirm: !prevState.confirm,
+                    }))
+                  }
+                  icon={PasswordMasked.confirm ? faEyeSlash : faEye}
+                />
+              }
+              label="Confirmer le mot de passe :"
+              className={
+                !confirmPasswordIsValid && confirmPasswordIsTouched
+                  ? "form__input--red"
+                  : ""
+              }
+              input={{
+                readOnly: false,
+                id: "confirm-password",
+                type: `${PasswordMasked.confirm ? "password" : "text"}`,
+                value: confirmPasswordValue,
+                onChange: confirmPasswordChangeHandler,
+                onBlur: confirmPasswordBlurHandler,
+                placeholder: "Taper le mot de passe ici",
+              }}
+              name="password"
+            />
+          )}
           {passwordIsTouched && (
             <ReactPasswordChecklist
-              rules={[
-                "minLength",
-                "number",
-                "lowercase",
-                "capital",
-                "specialChar",
-              ]}
+              rules={passwordRules}
               minLength={10}
               value={passwordValue}
+              valueAgain={confirmPasswordValue}
               messages={{
                 minLength: "Au moins 10 caractères.",
                 number: "Au moins 1 chiffre.",
                 lowercase: "Au moins 1 minuscule.",
                 capital: "Au moins 1 majuscule.",
                 specialChar: "Au moins 1 caractère spécial.",
+                match: "Le mot de passe doit correspondre.",
               }}
             />
           )}

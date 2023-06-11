@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import AppMenu from "../UI/AppMenu";
 import { StyledToolBar } from "./style";
-import { AppBar } from "@mui/material";
+import { AppBar, Box } from "@mui/material";
+import CustomSearchbar from "../UI/CustomSearchBar";
 
 function Header() {
   const [scrollActive, setScrollActive] = useState(false);
@@ -27,7 +28,15 @@ function Header() {
     <AppBar position="fixed" elevation={0}>
       <StyledToolBar className={scrollActive ? "scroll-active" : ""}>
         <Link href="/">Blog De Célia</Link>
-        <AppMenu />
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={1}
+        >
+          <CustomSearchbar />
+          <AppMenu />
+        </Box>
       </StyledToolBar>
     </AppBar>
   );

@@ -4,26 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import axios from "axios";
 // component import
-import { Autocomplete, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import useInput from "../../../hooks/use-input";
 import { Recipe } from "../../../global/types";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRouter } from "next/router";
+import { StyledAutoComplete } from "./style";
 
 // Component
 function CustomSearchbar() {
   const {
     value: searchbarEntryValue,
     isValid: searchbarEntryIsValid,
-    isTouched: searchbarEntryIsTouched,
-    valueHandler: searchbarEntryValueHandler,
     changeHandler: searchbarEntryChangeHandler,
     blurHandler: searchbarEntryBlurHandler,
   } = useInput();
   const router = useRouter();
   const [selectedValue, setSelectedValue] = useState<Recipe | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [isSearchBarSelected, setIsSearchBarSelected] = useState(false);
   const getRecipesData = useRef(
     // 'debounce' prevent server spamming, and authorize ajax request a number of milliseconds after input value stopped change
     debounce(async (value) => {
@@ -59,12 +57,12 @@ function CustomSearchbar() {
   }, []);
 
   return (
-    <Autocomplete
+    <StyledAutoComplete
       freeSolo
       onChange={(_, value) => setSelectedValue(value as Recipe | null)}
       onBlur={() => setRecipes([])}
       options={recipes} // 'recipes' is the list defined for autocompletion
-      getOptionLabel={(option) =>
+      getOptionLabel={(option: any) =>
         option instanceof Object && option.title ? option.title : ""
       } // Display the 'title' property value of each object from the array of object provide in 'options' prop
       defaultValue={null}
@@ -76,7 +74,6 @@ function CustomSearchbar() {
               router.replace(`/recipes/${selectedValue._id}`);
             }
           }}
-          label="recipe"
           {...params}
           rows={6}
           id="comment"
@@ -87,14 +84,7 @@ function CustomSearchbar() {
           placeholder="Rechercher une recette..."
           InputProps={{
             ...params.InputProps,
-            startAdornment: (
-              <SearchIcon
-                onClick={() => setIsSearchBarSelected(!isSearchBarSelected)}
-                sx={{
-                  cursor: "pointer",
-                }}
-              />
-            ),
+            startAdornment: <SearchIcon />,
           }}
         />
       )}

@@ -3,7 +3,6 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Paths } from "../types";
 import { StyledLink, StyledUl, StyledLi } from "./style";
-import CustomSearchBar from "../../CustomSearchBar";
 
 const DesktopMenu: React.FC = () => {
   const { data: session } = useSession();
@@ -17,7 +16,6 @@ const DesktopMenu: React.FC = () => {
 
   return (
     <nav>
-      <CustomSearchBar />
       <StyledUl>
         <StyledLi>
           <StyledLink href={Paths.HOME}>Accueil</StyledLink>
