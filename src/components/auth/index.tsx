@@ -102,7 +102,8 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
     : usernameIsValid &&
       emailIsValid &&
       passwordIsValid &&
-      (!isRegistered && passwordValue === confirmPasswordValue);
+      !isRegistered &&
+      passwordValue === confirmPasswordValue;
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -179,7 +180,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
           </Typography>
           {!isRegistered && (
             <Input
-              label="Entrer le nom d'utilisateur :"
+              label="* Nom d'utilisateur :"
               className={
                 !usernameIsValid && usernameIsTouched ? "form__input--red" : ""
               }
@@ -200,7 +201,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
             />
           )}
           <Input
-            label="Entrer l'email :"
+            label="* Adresse Email :"
             className={
               !emailIsValid && emailIsTouched ? "form__input--red" : ""
             }
@@ -232,7 +233,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
                 icon={PasswordMasked.password ? faEyeSlash : faEye}
               />
             }
-            label="Entrer le mot de passe :"
+            label="* Mot De Passe :"
             className={
               !passwordIsValid && passwordIsTouched ? "form__input--red" : ""
             }
@@ -261,7 +262,7 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
                   icon={PasswordMasked.confirm ? faEyeSlash : faEye}
                 />
               }
-              label="Confirmer le mot de passe :"
+              label="* Confirmer le mot de passe :"
               className={
                 !confirmPasswordIsValid && confirmPasswordIsTouched
                   ? "form__input--red"
@@ -300,16 +301,17 @@ const Auth: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
               Mot de passe perdu
             </ResetPasswordLink>
           )}
-          <Button sx={{ margin: "auto" }} type="submit" variant="contained">
+          <Button sx={{ margin: "0.5rem auto" }} type="submit" variant="contained">
             {isRegistered ? "Se connecter" : "S'inscrire"}
           </Button>
+          <Typography paragraph fontSize={12}>
+            * Informations obligatoires
+          </Typography>
           <Divider sx={{ m: 2 }} />
           <GoogleButton
-            label={`${
-              isRegistered ? "Se connecter" : "S'inscrire"
-            } avec Google`}
+            label={"Continuer avec Google"}
             type="light"
-            style={{ margin: "auto", width: "90%" }}
+            style={{ margin: "auto" }}
             onClick={() => signIn("google")}
           />
           <Box textAlign="center">

@@ -23,6 +23,9 @@ const DesktopMenu: React.FC = () => {
         <StyledLi>
           <StyledLink href={Paths.RECIPES}>Mes Recettes</StyledLink>
         </StyledLi>
+        <StyledLi>
+          <StyledLink href={Paths.ADD_RECIPE}>Ajouter Une Recette</StyledLink>
+        </StyledLi>
         {session && (
           <StyledLi>
             <StyledLink href={Paths.FAVORITES}>Favories</StyledLink>

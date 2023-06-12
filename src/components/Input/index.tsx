@@ -21,25 +21,29 @@ const Input: React.FC<InputProps> = ({
       </label>
       <div className={classes["form__input-container"]}>
         {input.type !== "textarea" && (
-          <div className={classes["form__input-container"]}>
+          <>
             <input
-              className={`${classes.form__input} ${className && classes[className]}`}
+              className={`${classes.form__input} ${
+                className && classes[className]
+              }`}
               {...input}
             />
             {icon}
-            {errorMessage?.isVisible && (
-              <div className={classes["form__error-message"]}>
-                <ErrorIcon />
-                <p>{errorMessage.text}</p>
-              </div>
-            )}
-          </div>
+          </>
         )}
         {input.type === "textarea" && (
           <textarea
-            className={`${classes.form__input} ${className && classes[className]}`}
+            className={`${classes.form__input} ${
+              className && classes[className]
+            }`}
             {...input}
           />
+        )}
+        {errorMessage?.isVisible && (
+          <div className={classes["form__error-message"]}>
+            <ErrorIcon />
+            <p>{errorMessage.text}</p>
+          </div>
         )}
       </div>
       {children}

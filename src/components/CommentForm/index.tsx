@@ -93,7 +93,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ pastryId }) => {
         <StyledLegend>Laisser un commentaire</StyledLegend>
       </Box>
       <Input
-        label="Nom"
+        label="* Nom :"
         className={
           !usernameIsValid && usernameIsTouched ? "form__input--red" : ""
         }
@@ -111,7 +111,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ pastryId }) => {
         }}
       />
       <Input
-        label="Email"
+        label="* Email :"
         className={
           !userEmailIsValid && userEmailIsTouched ? "form__input--red" : ""
         }
@@ -129,7 +129,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ pastryId }) => {
         }}
       />
       <Input
-        label="Commentaire"
+        label="* Commentaire :"
         className={
           !userCommentIsValid && userCommentIsTouched ? "form__input--red" : ""
         }
@@ -147,8 +147,9 @@ const CommentForm: React.FC<CommentFormProps> = ({ pastryId }) => {
           text: "Champs requis",
         }}
       />
+      <Typography paragraph fontSize={12}>* Informations obligatoires</Typography>
       <Typography paragraph>
-        * En utilisant ce formulaire, vous acceptez le stockage et le traitement
+        En utilisant ce formulaire, vous acceptez le stockage et le traitement
         de vos données par ce site.
       </Typography>
       <StyledButtonContainer>

@@ -39,6 +39,7 @@
     "react-google-button": "^0.7.2",
     "react-password-checklist": "^1.4.3",
     "react-query": "^3.39.3",
+    "react-quill": "^2.0.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.0",
     "sanitize-html": "^2.10.0",

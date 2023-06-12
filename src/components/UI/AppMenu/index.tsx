@@ -8,7 +8,7 @@ const AppMenu: React.FC = () => {
 
   useEffect(() => {
     const handleShowDoubleView = () => {
-      setDesktopMenu(window.innerWidth > 960 ? true : false);
+      setDesktopMenu(window.innerWidth > 1000 ? true : false);
     };
 
     window.addEventListener("resize", handleShowDoubleView);

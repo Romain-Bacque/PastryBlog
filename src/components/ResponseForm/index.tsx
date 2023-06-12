@@ -1,4 +1,4 @@
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import { StyledButtonContainer, StyledLegend } from "./style";
 import Input from "../Input";
 import useInput from "../../hooks/use-input";
@@ -91,7 +91,7 @@ const ResponseForm: React.FC<ResponseFormProps> = ({
         </Button>
       </Box>
       <Input
-        label="Commentaire"
+        label="* Commentaire :"
         className={
           !adminCommentIsValid && adminCommentIsTouched
             ? "form__input--red"
@@ -111,6 +111,9 @@ const ResponseForm: React.FC<ResponseFormProps> = ({
           text: "Champs requis",
         }}
       />
+      <Typography paragraph fontSize={12}>
+        * Informations obligatoires
+      </Typography>
       <StyledButtonContainer>
         <Button
           type="submit"

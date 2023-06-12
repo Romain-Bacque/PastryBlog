@@ -75,11 +75,10 @@ function CustomSearchbar() {
             }
           }}
           {...params}
-          rows={6}
           id="comment"
           onChange={searchbarEntryChangeHandler}
           onBlur={searchbarEntryBlurHandler}
-          type="textarea"
+          type="text"
           value={searchbarEntryValue}
           placeholder="Rechercher une recette..."
           InputProps={{
