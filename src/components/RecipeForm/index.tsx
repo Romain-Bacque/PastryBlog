@@ -2,19 +2,16 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import { StyledButtonContainer, StyledLegend } from "./style";
 import Input from "../Input";
 import useInput from "../../hooks/use-input";
-import { Response } from "./types";
-import { useQueryClient } from "react-query";
-import { addResponse } from "../../utils/ajax-requests";
+import { addRecipe } from "../../utils/ajax-requests";
 import useMyMutation from "../../hooks/use-mutation";
 import { useEffect, useState } from "react";
-import { CommentsPages } from "../../global/types";
 import useLoading from "../../hooks/use-loading";
 import "react-quill/dist/quill.snow.css";
 import QuillToolbar, { modules, formats } from "../UI/CustomQuillToolbar";
 import ReactQuill from "react-quill";
 
 const RecipeForm: React.FC = () => {
-    const handleLoading = useLoading();
+  const handleLoading = useLoading();
   const [alertMessage, setAlertMessage] = useState("");
   const [articleContent, setArticleContent] = useState("");
   const {
@@ -35,9 +32,11 @@ const RecipeForm: React.FC = () => {
   } = useInput();
 
   const formIsValid =
-    recipeTitleIsValid && recipeDescriptionIsValid && articleContent.length > 100;
+    recipeTitleIsValid &&
+    recipeDescriptionIsValid &&
+    articleContent.length > 100;
 
-    const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!formIsValid) return;
 
@@ -48,45 +47,15 @@ const RecipeForm: React.FC = () => {
       content: articleContent,
     };
 
-    mutate({ reqBody });
+    mutate(reqBody);
   };
 
-  const queryClient = useQueryClient();
-
-  const { errorMessage, useMutation } = useMyMutation(
-    addResponse,
-    null,
-    (response: Response) => {
-      queryClient.setQueryData<CommentsPages>("comments", (comments) => {
-        const updatedData = {
-          pageParams: comments?.pageParams || [],
-          pages:
-            comments?.pages.flat().map((comment) => {
-              if (comment._id === response.commentId) {
-                let updatedResponses: Response[];
-
-                if (comment.responses && comment.responses.length > 0) {
-                  comment.responses.push(response);
-                  updatedResponses = comment.responses;
-                } else {
-                  updatedResponses = [response];
-                }
-                return {
-                  ...comment,
-                  responses: updatedResponses,
-                };
-              } else return comment;
-            }) || [],
-        };
-
-        return updatedData;
-      });
-      recipeTitleResetHandler();
-      recipeDescriptionResetHandler();
-      setArticleContent("");
-      setAlertMessage("Recette ajoutée !");
-    }
-  );
+  const { errorMessage, useMutation } = useMyMutation(addRecipe, null, () => {
+    recipeTitleResetHandler();
+    recipeDescriptionResetHandler();
+    setArticleContent("");
+    setAlertMessage("Recette ajoutée !");
+  });
   const { status, mutate } = useMutation;
 
   useEffect(() => {

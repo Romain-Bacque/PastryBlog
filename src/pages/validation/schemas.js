@@ -107,36 +107,6 @@ export const editProfileSchema = joi
   .required();
 
 /**
- * postBrewerySchema monitor the brewery request body, and return an error if any of requirements doesn't match with it
- */
-export const postShelterImage = joi
-  .object({
-    title: joi.string().escapeHTML().required(),
-    image: joi.binary(),
-    description: joi.string().escapeHTML().required(),
-    address: joi.string().escapeHTML().required(),
-    lat: joi.number().required(),
-    lon: joi.number().required(),
-    categories: joi.array().items(joi.number().min(1).required()),
-  })
-  .required();
-
-/**
- * editBrewerySchema monitor the brewery request body, and return an error if any of requirements doesn't match with it
- */
-export const editBrewerySchema = joi
-  .object({
-    title: joi.string().escapeHTML().required(),
-    image: joi.binary(),
-    description: joi.string().escapeHTML().required(),
-    address: joi.string().escapeHTML().required(),
-    lat: joi.number().required(),
-    lon: joi.number().required(),
-    categories: joi.array().items(joi.number().min(1).required()),
-  })
-  .required();
-
-/**
  * addCommentSchema monitor the post comment request body, and return an error if any of requirements doesn't match with it
  */
 export const addCommentSchema = joi
@@ -202,30 +172,23 @@ export const passwordSchema = joi
   .required();
 
 /**
- * postBookingSchema monitor the post booking request body, and return an error if any of requirements doesn't match with it
- */
-export const postBookingSchema = joi
-  .object({
-    shelterId: joi.string().escapeHTML().required(),
-    name: joi.string().escapeHTML().required(),
-    numberOfPerson: joi.number().min(1).max(4).required(),
-    email: joi
-      .string()
-      .email({ minDomainSegments: 2, tlds: { allow: ["com", "fr", "net"] } })
-      .required(),
-    from: joi.date(),
-    to: joi.date(),
-    informations: joi.string().escapeHTML(),
-    categories: joi.array().items(joi.number().min(1).required()),
-  })
-  .required();
-
-/**
  * favoriteSchema monitor the post favorite request body, and return an error if any of requirements doesn't match with it
  */
 export const favoriteSchema = joi
   .object({
     userId: joi.string().escapeHTML().required(),
     recipeId: joi.string().escapeHTML().required(),
+  })
+  .required();
+
+/**
+ * postRecipeSchema monitor the post recipe request body, and return an error if any of requirements doesn't match with it
+ */
+export const postRecipeSchema = joi
+  .object({
+    date: joi.date().required(),
+    title: joi.string().escapeHTML().required(),
+    description: joi.string().escapeHTML().required(),
+    content: joi.string().required(),
   })
   .required();

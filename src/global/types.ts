@@ -74,6 +74,13 @@ export interface ExtendedSession extends Session {
     role?: string | null | undefined;
   };
 }
+export interface Article {
+  date: string;
+  title: string;
+  description: string;
+  content: string;
+};
+
 
 // aliases
 export type RecipeKeys = keyof Recipe;

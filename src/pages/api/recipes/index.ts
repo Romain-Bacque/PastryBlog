@@ -5,6 +5,10 @@ import { Recipe } from "../../models/Recipe";
 import { Tag } from "../../models/Tag";
 import { Recipe as RecipeType, Tag as TagType } from "../../../global/types";
 import { RecipeHasCategories } from "../../models/RecipeHasCategories";
+import * as cheerio from "cheerio"; // Importing the Cheerio module
+import { cloudinary } from "../../../utils/cloudinary";
+import multer from "multer";
+import { storage } from "../../../utils/cloudinary";
 
 // export async function getFeaturedRecipes(): Promise<RecipeType[]> {
 //   try {
@@ -212,6 +216,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set CSP here
+  const cspHeader =
+    "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https://cloudinary.com/; upgrade-insecure-requests; frame-ancestors 'self';";
+
+  res.setHeader("Content-Security-Policy-Report-Only", cspHeader); // 'Content-Security-Policy' in prod env
+
   if (req.method === "GET") {
     try {
       await dbConnect();
@@ -226,6 +236,38 @@ export default async function handler(
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Impossible to find a favorite!" });
+    }
+  } else if (req.method === "POST") {
+    try {
+      await dbConnect();
+      const { date, title, description, content } = req.body;
+      const $ = cheerio.load(content);
+
+      let base64ImgList = [];
+
+      $("img").each((_, image) => base64ImgList.push(image.attribs.src));
+
+      Promise.all(
+        base64ImgList.map((image) => {
+          return cloudinary.uploader.upload(image, "recipe_img", {
+            resource_type: "image",
+          });
+        })
+      )
+        .then((results) => {
+          // Récupération des informations sur les images uploadées
+          results.forEach((result) => {
+            console.log("Image uploaded:", result.url);
+          });
+        })
+        .catch((error) => {
+          console.error("Error uploading images:", error);
+        });
+
+      // res.status(200).json(recipes);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Impossible to add a recipe!" });
     }
   }
 }

@@ -1,6 +1,12 @@
 import axios from "axios";
-import { DeleteComment, UpdatedResponse, UserFavorite, getUserFavoritesResponse } from "./types";
 import {
+  DeleteComment,
+  UpdatedResponse,
+  UserFavorite,
+  getUserFavoritesResponse,
+} from "./types";
+import {
+  Article,
   Comment,
   ForgotPassword,
   ResetPassword,
@@ -135,4 +141,9 @@ export async function deleteUserFavorite(reqBody: UserFavorite) {
   );
 
   return response.data?.favorites;
+}
+
+// add recipe
+export async function addRecipe(reqBody: Article) {
+  await instance.post(`/recipes`, reqBody);
 }
