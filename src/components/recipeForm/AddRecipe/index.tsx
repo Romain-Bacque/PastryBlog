@@ -47,7 +47,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
     recipeDescriptionIsValid &&
     articleContent.length > 100;
 
-    const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!formIsValid) return;
@@ -67,6 +67,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
 
   const { errorMessage, useMutation } = useMyMutation(addRecipe, null, () => {
     recipeTitleResetHandler();
+    setSelectedCategories([]);
     recipeDescriptionResetHandler();
     setArticleContent("");
     setAlertMessage("Recette ajoutée !");
