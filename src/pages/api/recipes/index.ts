@@ -6,10 +6,14 @@ import { Tag } from "../../models/Tag";
 import { Recipe as RecipeType, Tag as TagType } from "../../../global/types";
 import { RecipeHasCategories } from "../../models/RecipeHasCategories";
 import * as cheerio from "cheerio"; // Importing the Cheerio module
-import { cloudinary } from "../../../utils/cloudinary";
-import multer from "multer";
-import { storage } from "../../../utils/cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
+// cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 // export async function getFeaturedRecipes(): Promise<RecipeType[]> {
 //   try {
 //     await dbConnect();
@@ -217,10 +221,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Set CSP here
-  const cspHeader =
-    "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https://cloudinary.com/; upgrade-insecure-requests; frame-ancestors 'self';";
+  // const cspHeader =
+  //   "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https://cloudinary.com/; upgrade-insecure-requests; frame-ancestors 'self';";
 
-  res.setHeader("Content-Security-Policy-Report-Only", cspHeader); // 'Content-Security-Policy' in prod env
+  // res.setHeader("Content-Security-Policy-Report-Only", cspHeader); // 'Content-Security-Policy' in prod env
 
   if (req.method === "GET") {
     try {
@@ -243,27 +247,30 @@ export default async function handler(
       const { date, title, description, content } = req.body;
       const $ = cheerio.load(content);
 
-      let base64ImgList = [];
+      const base64ImgList: string[] = [];
 
-      $("img").each((_, image) => base64ImgList.push(image.attribs.src));
+      $("img").each((_, image) => {
+        base64ImgList.push(image.attribs.src);
+      });
 
-      Promise.all(
-        base64ImgList.map((image) => {
-          return cloudinary.uploader.upload(image, "recipe_img", {
-            resource_type: "image",
-          });
-        })
-      )
+      let multiplePicturePromise = base64ImgList.map((image) =>
+        cloudinary.uploader.upload(image, { folder: "PastryBlog" })
+      );
+
+      // execute all promises
+      Promise.all(multiplePicturePromise)
         .then((results) => {
           // Récupération des informations sur les images uploadées
-          results.forEach((result) => {
-            console.log("Image uploaded:", result.url);
+          results.forEach(async (result) => {
+            console.log("Image uploaded:", await result.url);
           });
         })
         .catch((error) => {
           console.error("Error uploading images:", error);
         });
-
+        $("img").each((index, image) => {
+          image
+        });
       // res.status(200).json(recipes);
     } catch (error) {
       console.error(error);
