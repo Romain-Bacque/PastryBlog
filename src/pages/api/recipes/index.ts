@@ -221,10 +221,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Set CSP here
-  // const cspHeader =
-  //   "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https://cloudinary.com/; upgrade-insecure-requests; frame-ancestors 'self';";
+  const cspHeader =
+    "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https://cloudinary.com/; upgrade-insecure-requests; frame-ancestors 'self';";
 
-  // res.setHeader("Content-Security-Policy-Report-Only", cspHeader); // 'Content-Security-Policy' in prod env
+  res.setHeader("Content-Security-Policy-Report-Only", cspHeader); // 'Content-Security-Policy' in prod env
 
   if (req.method === "GET") {
     try {
@@ -258,23 +258,27 @@ export default async function handler(
       );
 
       // execute all promises
-      Promise.all(multiplePicturePromise)
-        .then((results) => {
-          // Récupération des informations sur les images uploadées
-          results.forEach(async (result) => {
-            console.log("Image uploaded:", await result.url);
-          });
-        })
-        .catch((error) => {
-          console.error("Error uploading images:", error);
+      const results = await Promise.all(multiplePicturePromise);
+
+      results.forEach(async (result) => {
+        $("img").each((_, image) => {
+          $(image).attr("src", result.secure_url);
         });
-        $("img").each((index, image) => {
-          image
-        });
-      // res.status(200).json(recipes);
+      });
+
+      await dbConnect();
+
+      await Recipe.create({
+        date,
+        title,
+        description,
+        content: $.html(),
+      });
+
+      res.status(200).json({ message: "Recipe created!" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Impossible to add a recipe!" });
+      res.status(500).json({ message: "Impossible to create a recipe!" });
     }
   }
 }
