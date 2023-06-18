@@ -1,16 +1,21 @@
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { StyledButtonContainer, StyledLegend } from "./style";
-import Input from "../Input";
-import useInput from "../../hooks/use-input";
-import { addRecipe } from "../../utils/ajax-requests";
-import useMyMutation from "../../hooks/use-mutation";
-import { useEffect, useState } from "react";
-import useLoading from "../../hooks/use-loading";
+import Input from "../../Input";
+import useInput from "../../../hooks/use-input";
+import { addRecipe } from "../../../utils/ajax-requests";
+import useMyMutation from "../../../hooks/use-mutation";
+import React, { useEffect, useState } from "react";
+import useLoading from "../../../hooks/use-loading";
 import "react-quill/dist/quill.snow.css";
-import QuillToolbar, { modules, formats } from "../UI/CustomQuillToolbar";
+import QuillToolbar, { modules, formats } from "../../UI/CustomQuillToolbar";
 import ReactQuill from "react-quill";
 
 const RecipeForm: React.FC = () => {
+  const [userInfo, setuserInfo] = useState({
+    title: props.postList[0].title,
+    description: props.postList[0].description,
+    information: props.postList[0].information,
+  });
   const handleLoading = useLoading();
   const [alertMessage, setAlertMessage] = useState("");
   const [articleContent, setArticleContent] = useState("");
@@ -22,6 +27,13 @@ const RecipeForm: React.FC = () => {
     blurHandler: recipeTitleBlurHandler,
     resetHandler: recipeTitleResetHandler,
   } = useInput();
+  const [inputFileStatus, setInputFileStatus] = useState<{
+    file: string | null;
+    value: string | null;
+  }>({
+    file: "",
+    value: "",
+  });
   const {
     value: recipeDescriptionValue,
     isValid: recipeDescriptionIsValid,
@@ -38,11 +50,13 @@ const RecipeForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!formIsValid) return;
 
     const reqBody = {
       date: new Date(),
       title: recipeTitleValue,
+      image: inputFileStatus.file || null,
       description: recipeDescriptionValue,
       content: articleContent,
     };
@@ -57,6 +71,40 @@ const RecipeForm: React.FC = () => {
     setAlertMessage("Recette ajoutée !");
   });
   const { status, mutate } = useMutation;
+
+  // Function to convert a Blob to Base64 string
+  const convertBlobToBase64 = (blob: Blob): Promise<string | null> => {
+    return new Promise((resolve, reject) => {
+      // Create a new FileReader object
+      const reader = new FileReader();
+
+      // Event handler when reading is complete
+      reader.onloadend = () => {
+        // The result property of the FileReader object contains the Base64 string
+        const base64String = reader.result as string;
+        // Resolve the promise with the Base64 string
+        resolve(base64String);
+      };
+
+      // Event handler for errors during reading
+      reader.onerror = () => {
+        // Reject the promise with an error if there is an issue converting Blob to Base64
+        reject(new Error("Error converting Blob to Base64"));
+      };
+
+      // Read the Blob as a Data URL, which will result in a Base64 string
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const fileToBase64 = await convertBlobToBase64(event.target.files![0]);
+
+    setInputFileStatus({
+      file: fileToBase64,
+      value: event.target.value,
+    });
+  }
 
   useEffect(() => {
     handleLoading(status, alertMessage, errorMessage);
@@ -91,6 +139,16 @@ const RecipeForm: React.FC = () => {
                     isVisible: !recipeTitleIsValid && recipeTitleIsTouched,
                     text: "Champs requis",
                   }}
+                />
+                <TextField
+                  label="photo de la recette"
+                  InputLabelProps={{ shrink: true }}
+                  id="image"
+                  type="file"
+                  name="image"
+                  value={inputFileStatus.value}
+                  onChange={handleFileChange}
+                  sx={{ mb: "2rem", p: 0 }}
                 />
                 <Input
                   label="description *"

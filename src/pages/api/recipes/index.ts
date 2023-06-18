@@ -6,14 +6,9 @@ import { Tag } from "../../models/Tag";
 import { Recipe as RecipeType, Tag as TagType } from "../../../global/types";
 import { RecipeHasCategories } from "../../models/RecipeHasCategories";
 import * as cheerio from "cheerio"; // Importing the Cheerio module
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "../../../utils/cloudinary";
+import { v4 as uuidv4 } from "uuid";
 
-// cloudinary config
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 // export async function getFeaturedRecipes(): Promise<RecipeType[]> {
 //   try {
 //     await dbConnect();
@@ -244,33 +239,51 @@ export default async function handler(
   } else if (req.method === "POST") {
     try {
       await dbConnect();
-      const { date, title, description, content } = req.body;
+      const { date, title, image, description, content } = req.body;
       const $ = cheerio.load(content);
+      console.log(image);
 
-      const base64ImgList: string[] = [];
+      const base64ImgList: { file: string; id: string }[] = [];
 
       $("img").each((_, image) => {
-        base64ImgList.push(image.attribs.src);
+        const uniqueId = uuidv4();
+
+        $(image).attr("id", uniqueId);
+        base64ImgList.push({ file: image.attribs.src, id: uniqueId });
       });
 
-      let multiplePicturePromise = base64ImgList.map((image) =>
-        cloudinary.uploader.upload(image, { folder: "PastryBlog" })
+      // add all article images from the recipe into cloudinary
+      const multiplePicturePromise = base64ImgList.map((image) =>
+        cloudinary.uploader.upload(image.file, {
+          folder: "PastryBlog",
+          public_id: image.id,
+        })
       );
 
-      // execute all promises
       const results = await Promise.all(multiplePicturePromise);
 
       results.forEach(async (result) => {
         $("img").each((_, image) => {
-          $(image).attr("src", result.secure_url);
+          if ($(image).attr("id") === result.public_id) {
+            $(image).attr("src", result.secure_url);
+          }
         });
       });
 
+      // add the recipe picture into cloudinary
+      const result = await cloudinary.uploader.upload(image, {
+        folder: "PastryBlog",
+      });
+
+      const imageUrl = result.secure_url;
+
+      // add the recipe into database
       await dbConnect();
 
       await Recipe.create({
         date,
         title,
+        image: imageUrl,
         description,
         content: $.html(),
       });

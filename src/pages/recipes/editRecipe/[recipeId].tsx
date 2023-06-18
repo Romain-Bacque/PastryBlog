@@ -2,9 +2,8 @@ import { IncomingMessage } from "http";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import csrfProtection from "../../utils/csrfProtection";
-import { getAllCategories } from "../api/recipes";
-import { Tag } from "../../global/types";
+import csrfProtection from "../../../utils/csrfProtection";
+import { getRecipeById } from "../../api/recipes";
 
 // interfaces
 interface IncomingMessageWithCSRF extends IncomingMessage {
@@ -12,20 +11,21 @@ interface IncomingMessageWithCSRF extends IncomingMessage {
 }
 interface ContextType extends NextPageContext {
   req: IncomingMessageWithCSRF | undefined;
+  params: {
+    recipeId: string;
+  };
 }
 
 // prevent to generate RecipeForm during SSR
-const AddRecipe = dynamic(
-  () => import("../../components/recipeForm/AddRecipe"),
+const EditRecipe = dynamic(
+  () => import("../../../components/recipeForm/EditRecipe"),
   {
     ssr: false,
   }
 );
 
-const AddRecipePage: React.FC<{ categories: Tag[]; csrfToken: string }> = (
-  props
-) => {
-  return <AddRecipe {...props} />;
+const AddRecipePage: React.FC = () => {
+  return <EditRecipe />;
 };
 
 export default AddRecipePage;
@@ -41,14 +41,15 @@ export async function getServerSideProps(context: ContextType) {
       },
     };
   }
+  const { recipeId } = context.params;
+
+  const recipe = await getRecipeById(recipeId);
 
   const { req, res } = context;
 
   await csrfProtection(req, res);
 
-  const categories = await getAllCategories();
-
   return {
-    props: { csrfToken: req?.csrfToken(), categories },
+    props: { csrfToken: req?.csrfToken(), recipe },
   };
 }

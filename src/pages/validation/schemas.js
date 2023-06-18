@@ -188,6 +188,7 @@ export const postRecipeSchema = joi
   .object({
     date: joi.date().required(),
     title: joi.string().escapeHTML().required(),
+    image: joi.binary(),
     description: joi.string().escapeHTML().required(),
     content: joi.string().required(),
   })

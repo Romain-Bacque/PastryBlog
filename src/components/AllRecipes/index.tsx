@@ -13,7 +13,7 @@ const AllRecipes: React.FC<AllRecipesProps> = ({
   recipes,
   isFavoritesPage,
 }) => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState<Tag[]>([]);
   const { data: session } = useSession();
   const router = useRouter();
 

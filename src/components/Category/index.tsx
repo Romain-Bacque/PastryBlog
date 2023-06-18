@@ -52,7 +52,7 @@ const Category: React.FC<CategoryProps> = ({
   }, [selectedCategoriesList, onSelectedCategories]);
 
   return categories?.length > 0 ? (
-    <Container sx={{ marginTop: 2 }}>
+    <Container sx={{ marginBottom: "2rem", p: "0!important" }}>
       <TagsList list={selectedCategoriesList} onTagDelete={handleTagDelete} />
       <FormControl fullWidth>
         <InputLabel
