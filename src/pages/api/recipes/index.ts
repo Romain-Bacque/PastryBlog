@@ -239,7 +239,7 @@ export default async function handler(
   } else if (req.method === "POST") {
     try {
       await dbConnect();
-      const { date, title, image, description, content } = req.body;
+      const { date, title, image, categories, description, content } = req.body;
       const $ = cheerio.load(content);
       console.log(image);
 
@@ -271,16 +271,20 @@ export default async function handler(
       });
 
       // add the recipe picture into cloudinary
-      const result = await cloudinary.uploader.upload(image, {
-        folder: "PastryBlog",
-      });
+      let imageUrl = null;
 
-      const imageUrl = result.secure_url;
+      if (image) {
+        const result = await cloudinary.uploader.upload(image, {
+          folder: "PastryBlog",
+        });
+
+        imageUrl = result.secure_url;
+      }
 
       // add the recipe into database
       await dbConnect();
 
-      await Recipe.create({
+      const result = await Recipe.create({
         date,
         title,
         image: imageUrl,
@@ -288,10 +292,23 @@ export default async function handler(
         content: $.html(),
       });
 
+      if (categories?.length > 0) {
+        const records = categories.map((category: TagType) => {
+          return {
+            recipeId: result._id,
+            tagId: category._id,
+          };
+        });
+
+        await RecipeHasCategories.insertMany(records);
+      }
+
       res.status(200).json({ message: "Recipe created!" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Impossible to create a recipe!" });
+      res
+        .status(500)
+        .json({ message: "Impossible to create a recipe properly!" });
     }
   }
 }
