@@ -4,7 +4,7 @@ import Input from "../../Input";
 import useInput from "../../../hooks/use-input";
 import { addRecipe } from "../../../utils/ajax-requests";
 import useMyMutation from "../../../hooks/use-mutation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useLoading from "../../../hooks/use-loading";
 import "react-quill/dist/quill.snow.css";
 import QuillToolbar, { modules, formats } from "../../UI/CustomQuillToolbar";
@@ -12,8 +12,10 @@ import ReactQuill from "react-quill";
 import Category from "../../Category";
 import { AddRecipeProps } from "./types";
 import { Tag } from "../../../global/types";
+import { useQueryClient } from "react-query";
 
 const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
+  const categoriesInputRef = useRef<JSX.Element | null>(null);
   const handleLoading = useLoading();
   const [alertMessage, setAlertMessage] = useState("");
   const [articleContent, setArticleContent] = useState("");
@@ -26,10 +28,10 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
     resetHandler: recipeTitleResetHandler,
   } = useInput();
   const [inputFileStatus, setInputFileStatus] = useState<{
-    file: string | null;
+    file: Blob | null;
     value: string | null;
   }>({
-    file: "",
+    file: null,
     value: "",
   });
   const [selectedCategories, setSelectedCategories] = useState<Tag[]>([]);
@@ -42,20 +44,37 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
     resetHandler: recipeDescriptionResetHandler,
   } = useInput();
 
+  const queryClient = useQueryClient();
+
+  const { errorMessage, useMutation } = useMyMutation(addRecipe, null, () => {
+    queryClient.invalidateQueries("recipes");
+    recipeTitleResetHandler();
+    setInputFileStatus({ file: null, value: "" });
+    setSelectedCategories([]);
+    recipeDescriptionResetHandler();
+    setArticleContent("");
+    setAlertMessage("Recette ajoutée !");
+  });
+  const { status, mutate } = useMutation;
+
   const formIsValid =
     recipeTitleIsValid &&
     recipeDescriptionIsValid &&
     articleContent.length > 100;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!formIsValid) return;
 
+    const fileToBase64 = inputFileStatus.file
+      ? await convertBlobToBase64(inputFileStatus.file)
+      : null;
+
     const reqBody = {
       date: new Date(),
       title: recipeTitleValue,
-      image: inputFileStatus.file || null,
+      image: fileToBase64,
       categories: selectedCategories,
       description: recipeDescriptionValue,
       content: articleContent,
@@ -65,16 +84,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
     mutate(reqBody);
   };
 
-  const { errorMessage, useMutation } = useMyMutation(addRecipe, null, () => {
-    recipeTitleResetHandler();
-    setSelectedCategories([]);
-    recipeDescriptionResetHandler();
-    setArticleContent("");
-    setAlertMessage("Recette ajoutée !");
-  });
-  const { status, mutate } = useMutation;
-
-  // Function to convert a Blob to Base64 string
+  // Function to convert a Blob (Binary Large Object) to Base64 string
   const convertBlobToBase64 = (blob: Blob): Promise<string | null> => {
     return new Promise((resolve, reject) => {
       // Create a new FileReader object
@@ -100,12 +110,17 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
   };
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const fileToBase64 = await convertBlobToBase64(event.target.files![0]);
+    try {
+      const file = event.target.files![0];
+      const value = event.target.value || null;
 
-    setInputFileStatus({
-      file: fileToBase64,
-      value: event.target.value,
-    });
+      setInputFileStatus({
+        file,
+        value,
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {
@@ -113,107 +128,106 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
   }, [status, alertMessage, errorMessage]);
 
   return (
-    <>
-      <div className="App">
-        <div className="container">
-          <div className="row">
-            <Container component="form" onSubmit={handleSubmit}>
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <StyledLegend>Ajouter une recette</StyledLegend>
-              </Box>
-              <div className="form-row">
-                <Input
-                  label="titre *"
-                  className={
-                    !recipeTitleIsValid && recipeTitleIsTouched
-                      ? "form__input--red"
-                      : ""
-                  }
-                  input={{
-                    id: "comment",
-                    onChange: recipeTitleChangeHandler,
-                    onBlur: recipeTitleBlurHandler,
-                    type: "text",
-                    value: recipeTitleValue,
-                    placeholder: "Taper le titre ici",
-                  }}
-                  errorMessage={{
-                    isVisible: !recipeTitleIsValid && recipeTitleIsTouched,
-                    text: "Champs requis",
-                  }}
+    <div className="App">
+      <div className="container">
+        <div className="row">
+          <Container component="form" onSubmit={handleSubmit}>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <StyledLegend>Ajouter une recette</StyledLegend>
+            </Box>
+            <div className="form-row">
+              <Input
+                label="titre *"
+                className={
+                  !recipeTitleIsValid && recipeTitleIsTouched
+                    ? "form__input--red"
+                    : ""
+                }
+                input={{
+                  id: "comment",
+                  onChange: recipeTitleChangeHandler,
+                  onBlur: recipeTitleBlurHandler,
+                  type: "text",
+                  value: recipeTitleValue,
+                  placeholder: "Taper le titre ici",
+                }}
+                errorMessage={{
+                  isVisible: !recipeTitleIsValid && recipeTitleIsTouched,
+                  text: "Champs requis",
+                }}
+              />
+              <TextField
+                label="photo de la recette"
+                InputLabelProps={{ shrink: true }}
+                id="image"
+                type="file"
+                name="image"
+                value={inputFileStatus.value}
+                onChange={handleFileChange}
+                sx={{ mb: "2rem", p: 0 }}
+              />
+              <Category
+                ref={categoriesInputRef}
+                categories={categories}
+                onSelectedCategories={setSelectedCategories}
+              />
+              <Input
+                label="description *"
+                className={
+                  !recipeDescriptionIsValid && recipeDescriptionIsTouched
+                    ? "form__input--red"
+                    : ""
+                }
+                input={{
+                  id: "comment",
+                  onChange: recipeDescriptionChangeHandler,
+                  onBlur: recipeDescriptionBlurHandler,
+                  type: "textarea",
+                  value: recipeDescriptionValue,
+                  placeholder: "Taper la description ici",
+                  rows: 4,
+                }}
+                errorMessage={{
+                  isVisible:
+                    !recipeDescriptionIsValid && recipeDescriptionIsTouched,
+                  text: "Champs requis",
+                }}
+              />
+              <div className="clearfix"></div>
+              <div className="form-group col-md-12 editor">
+                <label className="font-weight-bold">
+                  Recette <span className="required"> * </span>{" "}
+                </label>
+                <QuillToolbar toolbarId={"t1"} />
+                <ReactQuill
+                  theme="snow"
+                  value={articleContent}
+                  onChange={setArticleContent}
+                  placeholder={"Ecrivez votre superbe recette..."}
+                  modules={modules("t1")}
+                  formats={formats}
                 />
-                <TextField
-                  label="photo de la recette"
-                  InputLabelProps={{ shrink: true }}
-                  id="image"
-                  type="file"
-                  name="image"
-                  value={inputFileStatus.value}
-                  onChange={handleFileChange}
-                  sx={{ mb: "2rem", p: 0 }}
-                />
-                <Category
-                  categories={categories}
-                  onSelectedCategories={setSelectedCategories}
-                />
-                <Input
-                  label="description *"
-                  className={
-                    !recipeDescriptionIsValid && recipeDescriptionIsTouched
-                      ? "form__input--red"
-                      : ""
-                  }
-                  input={{
-                    id: "comment",
-                    onChange: recipeDescriptionChangeHandler,
-                    onBlur: recipeDescriptionBlurHandler,
-                    type: "textarea",
-                    value: recipeDescriptionValue,
-                    placeholder: "Taper la description ici",
-                    rows: 4,
-                  }}
-                  errorMessage={{
-                    isVisible:
-                      !recipeDescriptionIsValid && recipeDescriptionIsTouched,
-                    text: "Champs requis",
-                  }}
-                />
-                <div className="clearfix"></div>
-                <div className="form-group col-md-12 editor">
-                  <label className="font-weight-bold">
-                    Recette <span className="required"> * </span>{" "}
-                  </label>
-                  <QuillToolbar toolbarId={"t1"} />
-                  <ReactQuill
-                    theme="snow"
-                    value={articleContent}
-                    onChange={setArticleContent}
-                    placeholder={"Ecrivez votre superbe recette..."}
-                    modules={modules("t1")}
-                    formats={formats}
-                  />
-                </div>
-                <br />
-                <Typography paragraph fontSize={12}>
-                  * Informations obligatoires
-                </Typography>
-                <StyledButtonContainer>
-                  <Button
-                    type="submit"
-                    disabled={!formIsValid}
-                    sx={{ width: "200px", m: "auto" }}
-                    variant="outlined"
-                    size="large"
-                  >
-                    Publier
-                  </Button>
-                </StyledButtonContainer>
               </div>
-            </Container>
-          </div>
+              <br />
+              <Typography paragraph fontSize={12}>
+                * Informations obligatoires
+              </Typography>
+              <StyledButtonContainer>
+                <Button
+                  type="submit"
+                  disabled={!formIsValid}
+                  sx={{ width: "200px", m: "auto" }}
+                  variant="outlined"
+                  size="large"
+                >
+                  Publier
+                </Button>
+              </StyledButtonContainer>
+            </div>
+          </Container>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

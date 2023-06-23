@@ -1,3 +1,5 @@
+import { RefObject } from "react";
+
 export interface Categorie {
   _id: string;
   tag: string;

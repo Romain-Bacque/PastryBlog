@@ -235,9 +235,10 @@ const CustomCard: React.FC<CustomCardProps> = ({
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography variant="body2" noWrap={isLinkShown} paragraph>
-            {content}
-          </Typography>
+          <div
+            className="post__description"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
           {isLinkShown && (
             <Button variant="outlined">
               <Link style={{ color: "inherit" }} href={`recipes/${_id}`}>

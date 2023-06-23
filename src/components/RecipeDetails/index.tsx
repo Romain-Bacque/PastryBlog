@@ -34,9 +34,10 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({
         <Typography fontWeight={700} component="span">
           Recette :
         </Typography>
-        <Typography mb="2rem" paragraph component="h2">
-          {content}
-        </Typography>
+        <div
+          className="post__description"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
         <Divider />
       </Box>
       <CommentForm pastryId={_id} />
