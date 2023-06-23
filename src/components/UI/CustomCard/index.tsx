@@ -11,7 +11,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CustomCardProps } from "./types";
 import Link from "next/link";
-import { Button } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { useRouter } from "next/router";
 import TagsList from "../TagsList";
 import { useEffect, useState } from "react";
@@ -234,13 +234,14 @@ const CustomCard: React.FC<CustomCardProps> = ({
         </ExpandMore>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Divider light />
         <CardContent>
           <div
-            className="post__description"
+            style={{ marginBottom: "2rem" }}
             dangerouslySetInnerHTML={{ __html: content }}
           />
           {isLinkShown && (
-            <Button variant="outlined">
+            <Button sx={{ ml: "auto" }} variant="outlined">
               <Link style={{ color: "inherit" }} href={`recipes/${_id}`}>
                 Plus de détails
               </Link>

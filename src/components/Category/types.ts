@@ -8,4 +8,5 @@ export interface Categorie {
 export interface CategoryProps {
   categories: { _id: string; tag: string }[];
   onSelectedCategories: (arg: any) => void;
+  isCleared?: boolean;
 }

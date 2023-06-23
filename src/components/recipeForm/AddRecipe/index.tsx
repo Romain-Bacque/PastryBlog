@@ -12,10 +12,9 @@ import ReactQuill from "react-quill";
 import Category from "../../Category";
 import { AddRecipeProps } from "./types";
 import { Tag } from "../../../global/types";
-import { useQueryClient } from "react-query";
 
 const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
-  const categoriesInputRef = useRef<JSX.Element | null>(null);
+  const [isCleared, setIsCleared] = useState(false);
   const handleLoading = useLoading();
   const [alertMessage, setAlertMessage] = useState("");
   const [articleContent, setArticleContent] = useState("");
@@ -44,11 +43,8 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
     resetHandler: recipeDescriptionResetHandler,
   } = useInput();
 
-  const queryClient = useQueryClient();
-
   const { errorMessage, useMutation } = useMyMutation(addRecipe, null, () => {
-    queryClient.invalidateQueries("recipes");
-    recipeTitleResetHandler();
+    setIsCleared(true);
     setInputFileStatus({ file: null, value: "" });
     setSelectedCategories([]);
     recipeDescriptionResetHandler();
@@ -167,7 +163,7 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories, csrfToken }) => {
                 sx={{ mb: "2rem", p: 0 }}
               />
               <Category
-                ref={categoriesInputRef}
+                isCleared={isCleared}
                 categories={categories}
                 onSelectedCategories={setSelectedCategories}
               />

@@ -35,7 +35,7 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({
           Recette :
         </Typography>
         <div
-          className="post__description"
+          style={{ marginBottom: "2rem" }}
           dangerouslySetInnerHTML={{ __html: content }}
         />
         <Divider />
